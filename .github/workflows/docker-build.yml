@@ -1,0 +1,45 @@
+name: Docker Build Validation
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Build Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./deployd/Dockerfile
+        push: false
+        tags: anticipation-web:test
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        
+    - name: Test Nginx configuration
+      run: |
+        docker run --rm anticipation-web:test nginx -t
+        
+    - name: Test health endpoint
+      run: |
+        docker run -d --name test-container -p 8080:80 anticipation-web:test
+        sleep 5
+        curl -f http://localhost:8080/health || exit 1
+        docker stop test-container
+        
+    - name: Build summary
+      run: |
+        echo "✅ Docker build successful"
+        echo "✅ Nginx configuration valid"
+        echo "✅ Health check endpoint working"

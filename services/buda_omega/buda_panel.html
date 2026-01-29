@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>OShiva - Automation & Orchestration Panel</title>
+
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --panel: rgba(0,0,0,0.45);
+      --border:#2a2f3a;
+      --text:#e6e6e6;
+      --muted:#a9b0bb;
+      --ok:#22c55e;
+      --warn:#f59e0b;
+      --bad:#ef4444;
+      --shiva-blue: #4f46e5;
+      --shiva-cyan: #06b6d4;
+    }
+    *{box-sizing:border-box;font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;}
+    body{margin:0;background:var(--bg);color:var(--text);overflow:hidden;}
+    #layout{
+      position:fixed; inset:0;
+      display:grid;
+      grid-template-columns: 360px 1fr;
+      gap:12px;
+      padding:12px;
+    }
+    #panel{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+      overflow:auto;
+      backdrop-filter: blur(6px);
+    }
+    h2{margin:0 0 10px 0; font-size:16px;}
+    .section{border-top:1px solid var(--border); padding-top:12px; margin-top:12px;}
+    .row{display:flex; gap:8px; flex-wrap:wrap;}
+    button{
+      border:1px solid var(--border);
+      background:#111827;
+      color:var(--text);
+      padding:8px 10px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:600;
+    }
+    button:disabled{opacity:0.5; cursor:not-allowed;}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,0.04);
+      margin:6px 0;
+    }
+    .dot{width:10px;height:10px;border-radius:50%;}
+    .dot.ok{background:var(--ok);}
+    .dot.warn{background:var(--warn);}
+    .dot.bad{background:var(--bad);}
+    .kv{display:grid; grid-template-columns: 1fr auto; gap:6px 10px; margin-top:8px; color:var(--muted); font-size:13px;}
+    .kv b{color:var(--text); font-weight:650;}
+    .bar{
+      margin-top:10px;
+    }
+    .bar label{display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:6px;}
+    .track{
+      width:100%; height:10px; border-radius:999px;
+      background:rgba(255,255,255,0.08);
+      border:1px solid var(--border);
+      overflow:hidden;
+    }
+    .fill{height:100%; width:0%;}
+    .fill.automation{background:var(--shiva-blue);}
+    .fill.orchestration{background:var(--shiva-cyan);}
+    .fill.efficiency{background:#8b5cf6;}
+
+    #logs{
+      margin-top:10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size:12px;
+      color:#d1d5db;
+      background:rgba(0,0,0,0.35);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:10px;
+      height:220px;
+      overflow:auto;
+      white-space:pre-wrap;
+    }
+
+    #viewport{
+      position:relative;
+      border:1px solid var(--border);
+      border-radius:14px;
+      overflow:hidden;
+      background: 
+        radial-gradient(1200px 600px at 50% 20%, rgba(79, 70, 229, 0.15), rgba(0,0,0,0) 60%),
+        var(--bg);
+    }
+    #infoOverlay{
+      position:absolute;
+      left:14px; top:14px;
+      background:rgba(0,0,0,0.35);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:12px 14px;
+      max-width:420px;
+      backdrop-filter: blur(6px);
+      font-size:13px;
+      color:var(--muted);
+      z-index:10;
+    }
+    #infoOverlay .legend{margin-top:8px; display:grid; grid-template-columns: 12px 1fr; gap:6px 8px;}
+    .sw{width:12px;height:12px;border-radius:3px;border:1px solid rgba(255,255,255,0.25);}
+    
+    #shivaContainer {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .shiva-image {
+      max-width: 80%;
+      max-height: 80%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 30px rgba(79, 70, 229, 0.4));
+      animation: shivaGlow 3s ease-in-out infinite alternate;
+    }
+    
+    .shiva-title {
+      position: absolute;
+      bottom: 30px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--shiva-cyan);
+      text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+      letter-spacing: 1px;
+    }
+    
+    .shiva-subtitle {
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 16px;
+      color: var(--muted);
+    }
+    
+    @keyframes shivaGlow {
+      from {
+        filter: drop-shadow(0 0 20px rgba(79, 70, 229, 0.3));
+      }
+      to {
+        filter: drop-shadow(0 0 40px rgba(79, 70, 229, 0.6));
+      }
+    }
+    
+    .process-flow {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    
+    .flow-node {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: var(--shiva-cyan);
+      border-radius: 50%;
+      opacity: 0.7;
+      animation: flow 3s linear infinite;
+    }
+    
+    @keyframes flow {
+      0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+      }
+      50% {
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(-100vh) translateX(20px);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="layout">
+    <aside id="panel">
+      <h2>OShiva - Automation & Orchestration</h2>
+
+      <div class="pill" title="OShiva Automation System">
+        <span id="connDot" class="dot bad"></span>
+        <span id="connText">System Offline</span>
+      </div>
+
+      <div class="row">
+        <button id="btnConnect">Initialize</button>
+        <button id="btnStart" disabled>START</button>
+        <button id="btnStop" disabled>STOP</button>
+        <button id="btnDisconnect" disabled>Shutdown</button>
+      </div>
+
+      <div class="kv">
+        <span>System Status</span><b id="deviceName">—</b>
+        <span>Processes/s</span><b id="pps">—</b>
+        <span>Last Process</span><b id="lastPkt">—</b>
+        <span>Success Rate</span><b id="lossRate">—</b>
+        <span>Efficiency</span><b id="fsEst">—</b>
+      </div>
+
+      <div class="section">
+        <h2>System Metrics</h2>
+
+        <div class="bar">
+          <label><span>Automation Level</span><span id="deltaVal">0.00</span></label>
+          <div class="track"><div id="deltaFill" class="fill automation"></div></div>
+        </div>
+
+        <div class="bar">
+          <label><span>Orchestration</span><span id="thetaVal">0.00</span></label>
+          <div class="track"><div id="thetaFill" class="fill orchestration"></div></div>
+        </div>
+
+        <div class="bar">
+          <label><span>Efficiency</span><span id="gammaVal">0.00</span></label>
+          <div class="track"><div id="gammaFill" class="fill efficiency"></div></div>
+        </div>
+
+        <div class="kv" style="margin-top:10px;">
+          <span>Active Workflows</span><b id="dominant">—</b>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>System Logs</h2>
+        <div id="logs">OShiva Automation System initialized...
+Ready for intelligent process orchestration.</div>
+      </div>
+    </aside>
+
+    <main id="viewport">
+      <div id="infoOverlay">
+        <div>OShiva Automation & Orchestration System</div>
+        <div style="margin-top:10px;">Advanced process automation and workflow orchestration powered by AI.</div>
+      </div>
+
+      <div id="shivaContainer">
+        <img src="/images/logo/Buda-omega.png" alt="Shiva" class="shiva-image">
+        <div class="shiva-title">OShiva</div>
+        <div class="shiva-subtitle">Automation & Orchestration of Intelligent Processes</div>
+        <div class="process-flow" id="processFlow"></div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Elementos del DOM
+    const btnConnect = document.getElementById('btnConnect');
+    const btnStart = document.getElementById('btnStart');
+    const btnStop = document.getElementById('btnStop');
+    const btnDisconnect = document.getElementById('btnDisconnect');
+    const connDot = document.getElementById('connDot');
+    const connText = document.getElementById('connText');
+    const deviceName = document.getElementById('deviceName');
+    const pps = document.getElementById('pps');
+    const lastPkt = document.getElementById('lastPkt');
+    const lossRate = document.getElementById('lossRate');
+    const fsEst = document.getElementById('fsEst');
+    const logs = document.getElementById('logs');
+    const processFlow = document.getElementById('processFlow');
+    
+    // Variables para métricas
+    const automationFill = document.getElementById('deltaFill');
+    const orchestrationFill = document.getElementById('thetaFill');
+    const efficiencyFill = document.getElementById('gammaFill');
+    const automationVal = document.getElementById('deltaVal');
+    const orchestrationVal = document.getElementById('thetaVal');
+    const efficiencyVal = document.getElementById('gammaVal');
+    const dominant = document.getElementById('dominant');
+    
+    // Estado del sistema
+    let systemStatus = 'offline';
+    let isRunning = false;
+    let processInterval;
+    let processCount = 0;
+    let successCount = 0;
+    let automationLevel = 0;
+    let orchestrationLevel = 0;
+    let efficiencyLevel = 0;
+    
+    // Función para agregar log
+    function addLog(message) {
+      const timestamp = new Date().toLocaleTimeString();
+      logs.textContent += `\n[${timestamp}] ${message}`;
+      logs.scrollTop = logs.scrollHeight;
+    }
+    
+    // Función para actualizar métricas
+    function updateMetrics() {
+      if (!isRunning) return;
+      
+      // Actualizar valores con variación realista
+      automationLevel = Math.min(1, automationLevel + (Math.random() * 0.02 - 0.01));
+      orchestrationLevel = Math.min(1, orchestrationLevel + (Math.random() * 0.015 - 0.0075));
+      efficiencyLevel = Math.min(1, efficiencyLevel + (Math.random() * 0.01 - 0.005));
+      
+      // Asegurar que no bajen de 0
+      automationLevel = Math.max(0.3, automationLevel);
+      orchestrationLevel = Math.max(0.4, orchestrationLevel);
+      efficiencyLevel = Math.max(0.5, efficiencyLevel);
+      
+      // Actualizar barras
+      automationFill.style.width = `${automationLevel * 100}%`;
+      orchestrationFill.style.width = `${orchestrationLevel * 100}%`;
+      efficiencyFill.style.width = `${efficiencyLevel * 100}%`;
+      
+      // Actualizar valores numéricos
+      automationVal.textContent = automationLevel.toFixed(2);
+      orchestrationVal.textContent = orchestrationLevel.toFixed(2);
+      efficiencyVal.textContent = efficiencyLevel.toFixed(2);
+      
+      // Determinar métrica dominante
+      const metrics = [
+        {name: 'Automation', value: automationLevel},
+        {name: 'Orchestration', value: orchestrationLevel},
+        {name: 'Efficiency', value: efficiencyLevel}
+      ];
+      metrics.sort((a, b) => b.value - a.value);
+      dominant.textContent = metrics[0].name;
+      
+      // Actualizar otras métricas
+      processCount++;
+      pps.textContent = `${Math.floor(Math.random() * 10 + 5)}`;
+      const successRate = Math.floor(Math.random() * 15 + 85);
+      lossRate.textContent = `${successRate}%`;
+      fsEst.textContent = `${Math.floor(Math.random() * 20 + 80)}%`;
+      lastPkt.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+      
+      // Crear nodos de flujo
+      if (Math.random() > 0.7) {
+        createFlowNode();
+      }
+    }
+    
+    // Función para crear nodos de flujo
+    function createFlowNode() {
+      const node = document.createElement('div');
+      node.className = 'flow-node';
+      node.style.left = `${Math.random() * 100}%`;
+      node.style.animationDelay = `${Math.random() * 2}s`;
+      node.style.background = Math.random() > 0.5 ? 'var(--shiva-blue)' : 'var(--shiva-cyan)';
+      node.style.width = `${Math.random() * 15 + 10}px`;
+      node.style.height = node.style.width;
+      
+      processFlow.appendChild(node);
+      
+      // Remover después de la animación
+      setTimeout(() => {
+        if (node.parentNode) {
+          node.parentNode.removeChild(node);
+        }
+      }, 3000);
+    }
+    
+    // Función para inicializar sistema
+    function initializeSystem() {
+      systemStatus = 'initializing';
+      connDot.className = 'dot warn';
+      connText.textContent = 'Initializing...';
+      deviceName.textContent = 'OShiva Core';
+      btnConnect.disabled = true;
+      btnStart.disabled = false;
+      btnDisconnect.disabled = false;
+      
+      addLog('Initializing OShiva Automation System...');
+      addLog('Loading process definitions...');
+      addLog('Establishing workflow connections...');
+      
+      setTimeout(() => {
+        systemStatus = 'online';
+        connDot.className = 'dot ok';
+        connText.textContent = 'System Online';
+        addLog('System initialization complete.');
+        addLog('Ready to start automation workflows.');
+      }, 2000);
+    }
+    
+    // Función para iniciar procesos
+    function startProcesses() {
+      if (systemStatus !== 'online') return;
+      
+      isRunning = true;
+      btnStart.disabled = true;
+      btnStop.disabled = false;
+      
+      // Resetear métricas
+      automationLevel = 0.5;
+      orchestrationLevel = 0.6;
+      efficiencyLevel = 0.7;
+      
+      processInterval = setInterval(updateMetrics, 500);
+      
+      addLog('Starting automation workflows...');
+      addLog('Process orchestration initiated.');
+      addLog('Monitoring system metrics...');
+    }
+    
+    // Función para detener procesos
+    function stopProcesses() {
+      isRunning = false;
+      btnStart.disabled = false;
+      btnStop.disabled = true;
+      
+      if (processInterval) {
+        clearInterval(processInterval);
+      }
+      
+      addLog('Stopping automation workflows...');
+      addLog('All processes terminated gracefully.');
+    }
+    
+    // Función para apagar sistema
+    function shutdownSystem() {
+      stopProcesses();
+      
+      systemStatus = 'offline';
+      connDot.className = 'dot bad';
+      connText.textContent = 'System Offline';
+      deviceName.textContent = '—';
+      pps.textContent = '—';
+      lastPkt.textContent = '—';
+      lossRate.textContent = '—';
+      fsEst.textContent = '—';
+      dominant.textContent = '—';
+      
+      btnConnect.disabled = false;
+      btnStart.disabled = true;
+      btnStop.disabled = true;
+      btnDisconnect.disabled = true;
+      
+      // Resetear barras
+      automationFill.style.width = '0%';
+      orchestrationFill.style.width = '0%';
+      efficiencyFill.style.width = '0%';
+      automationVal.textContent = '0.00';
+      orchestrationVal.textContent = '0.00';
+      efficiencyVal.textContent = '0.00';
+      
+      addLog('System shutdown initiated...');
+      addLog('All connections closed.');
+      addLog('OShiva system powered down.');
+    }
+    
+    // Event Listeners
+    btnConnect.addEventListener('click', initializeSystem);
+    btnStart.addEventListener('click', startProcesses);
+    btnStop.addEventListener('click', stopProcesses);
+    btnDisconnect.addEventListener('click', shutdownSystem);
+    
+    // Limpiar nodos de flujo periódicamente
+    setInterval(() => {
+      const nodes = processFlow.querySelectorAll('.flow-node');
+      nodes.forEach(node => {
+        if (node.getBoundingClientRect().top < -20) {
+          node.parentNode.removeChild(node);
+        }
+      });
+    }, 1000);
+    
+    // Crear algunos nodos de flujo iniciales
+    for (let i = 0; i < 5; i++) {
+      setTimeout(() => createFlowNode(), i * 300);
+    }
+  </script>
+</body>
+</html>

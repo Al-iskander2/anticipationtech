@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anticipation – Technology</title>
 
   <!-- Fuentes -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Montserrat:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
   <!-- GSAP para animaciones -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
@@ -19,20 +22,29 @@
 
     :root {
       /* Paleta Anticipation simplificada */
-      --brand: #204070;        /* Azul principal */
-      --brand-soft: #486898;   /* Azul suave */
-      --accent-mint: #57E0C8;  /* Confirmar / CTA principal */
-      --accent-magenta: #FA41B8; /* Deny / secundario */
-      --bg: #F9FAFB;           /* Fondo principal claro */
-      --bg-alt: #F3F4F6;       /* Sección alterna */
-      --text: #111827;         /* Texto principal */
-      --muted: #6B7280;        /* Texto secundario */
-      --border: #E5E7EB;       /* Bordes */
-      
+      --brand: #204070;
+      /* Azul principal */
+      --brand-soft: #486898;
+      /* Azul suave */
+      --accent-mint: #57E0C8;
+      /* Confirmar / CTA principal */
+      --accent-magenta: #FA41B8;
+      /* Deny / secundario */
+      --bg: #F9FAFB;
+      /* Fondo principal claro */
+      --bg-alt: #F3F4F6;
+      /* Sección alterna */
+      --text: #111827;
+      /* Texto principal */
+      --muted: #6B7280;
+      /* Texto secundario */
+      --border: #E5E7EB;
+      /* Bordes */
+
       /* Sombra suave */
       --shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
       --shadow-hover: 0 8px 24px rgba(15, 23, 42, 0.12);
-      
+
       /* Variables para tarjetas UI */
       --paper: #FFFFFF;
       --card-border: #E5E7EB;
@@ -53,11 +65,14 @@
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      padding-top: 20px; /* Espacio para el menú fijo */
+      padding-top: 20px;
+      /* Espacio para el menú fijo */
     }
 
     /* Tipografía limpia */
-    h1, h2, h3 {
+    h1,
+    h2,
+    h3 {
       font-weight: 700;
       line-height: 1.2;
     }
@@ -217,14 +232,41 @@
       transform: translateY(0);
     }
 
-    .minimal-menu-link:nth-child(1) { transition-delay: 0.05s; }
-    .minimal-menu-link:nth-child(2) { transition-delay: 0.1s; }
-    .minimal-menu-link:nth-child(3) { transition-delay: 0.15s; }
-    .minimal-menu-link:nth-child(4) { transition-delay: 0.2s; }
-    .minimal-menu-link:nth-child(5) { transition-delay: 0.25s; }
-    .minimal-menu-link:nth-child(6) { transition-delay: 0.3s; }
-    .minimal-menu-link:nth-child(7) { transition-delay: 0.35s; }
-    .minimal-menu-link:nth-child(8) { transition-delay: 0.4s; }
+    .minimal-menu-link:nth-child(1) {
+      transition-delay: 0.05s;
+    }
+
+    .minimal-menu-link:nth-child(2) {
+      transition-delay: 0.1s;
+    }
+
+    .minimal-menu-link:nth-child(3) {
+      transition-delay: 0.15s;
+    }
+
+    .minimal-menu-link:nth-child(4) {
+      transition-delay: 0.2s;
+    }
+
+    .minimal-menu-link:nth-child(5) {
+      transition-delay: 0.25s;
+    }
+
+    .minimal-menu-link:nth-child(6) {
+      transition-delay: 0.3s;
+    }
+
+    .minimal-menu-link:nth-child(7) {
+      transition-delay: 0.35s;
+    }
+
+    .minimal-menu-link:nth-child(8) {
+      transition-delay: 0.4s;
+    }
+
+    .minimal-menu-link:nth-child(9) {
+      transition-delay: 0.45s;
+    }
 
     .minimal-menu-link:hover {
       background-color: rgba(32, 64, 112, 0.05);
@@ -332,6 +374,107 @@
 
     .btn-secondary:hover {
       background: var(--brand);
+    }
+
+    /* ========== SERVICES SECTION ========== */
+
+    #services h1 {
+      color: var(--brand);
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .service-card {
+      background: var(--paper);
+      border-radius: 20px;
+      padding: 2rem;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-soft);
+      text-decoration: none;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .service-card-header {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .service-icon {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+      border-radius: 10px;
+      background: var(--bg);
+      padding: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .service-card h3 {
+      font-size: 1.4rem;
+      color: var(--brand-soft);
+      margin: 0;
+    }
+
+    .service-card p {
+      font-size: 0.95rem;
+      color: var(--muted);
+      flex-grow: 1;
+      margin-bottom: 1.25rem;
+    }
+
+    .service-cta {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--brand-soft);
+      text-align: right;
+      margin-top: auto;
+      transition: color 0.2s ease;
+    }
+
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.15);
+    }
+
+    .service-card:hover .service-cta {
+      color: var(--brand);
+    }
+
+    /* Responsive para servicios */
+    @media (max-width: 768px) {
+      .services-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .service-card {
+        padding: 1.5rem;
+      }
+
+      .service-icon {
+        width: 45px;
+        height: 45px;
+      }
+
+      .service-card h3 {
+        font-size: 1.25rem;
+      }
+    }
+
+    .service-description {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--muted);
     }
 
     /* Product section */
@@ -669,24 +812,28 @@
     }
 
     /* Future Section */
-    .future-content, .coming-soon-content {
+    .future-content,
+    .coming-soon-content {
       max-width: 800px;
       margin: 0 auto;
     }
 
-    .future-list, .coming-list {
+    .future-list,
+    .coming-list {
       list-style: none;
       margin: 1.5rem 0;
     }
 
-    .future-list li, .coming-list li {
+    .future-list li,
+    .coming-list li {
       padding: 0.5rem 0;
       display: flex;
       align-items: flex-start;
       gap: 0.75rem;
     }
 
-    .future-list li:before, .coming-list li:before {
+    .future-list li:before,
+    .coming-list li:before {
       content: "•";
       color: var(--accent-mint);
       font-weight: bold;
@@ -772,45 +919,46 @@
       h1 {
         font-size: 2rem;
       }
-      
+
       h2 {
         font-size: 1.75rem;
       }
-      
+
       .product-showcase {
         grid-template-columns: 1fr;
       }
-      
+
       section {
         padding: 3rem 0;
       }
-      
+
       #home {
         padding-top: 6rem;
       }
-      
+
       .container {
         padding: 0 1rem;
       }
-      
+
       .team-ui-grid {
         grid-template-columns: 1fr;
       }
-      
-      .science-grid, .coming-grid {
+
+      .science-grid,
+      .coming-grid {
         grid-template-columns: 1fr;
       }
-      
+
       .profile-header {
         flex-direction: column;
         text-align: center;
         gap: 1rem;
       }
-      
+
       .ui-card-header {
         justify-content: center;
       }
-      
+
       /* Menú en móvil */
       .minimal-menu-container {
         top: 15px;
@@ -818,19 +966,19 @@
         width: calc(100% - 30px);
         max-width: 300px;
       }
-      
+
       .minimal-menu {
         width: 100%;
       }
-      
+
       .minimal-menu.open {
         width: 100%;
       }
-      
+
       .minimal-menu-text {
         font-size: 14px;
       }
-      
+
       /* Mostrar dock solo en móvil */
       #dock {
         display: flex;
@@ -843,7 +991,7 @@
         justify-content: space-around;
         z-index: 100;
       }
-      
+
       .dock-item {
         display: flex;
         flex-direction: column;
@@ -853,11 +1001,11 @@
         font-size: 0.75rem;
         gap: 0.25rem;
       }
-      
+
       .dock-item.active {
         color: var(--brand);
       }
-      
+
       .whatsapp-float {
         bottom: 5rem;
         right: 1rem;
@@ -865,6 +1013,7 @@
     }
   </style>
 </head>
+
 <body>
   <!-- Menú Minimalista -->
   <div class="minimal-menu-container">
@@ -878,53 +1027,64 @@
           <span class="minimal-menu-text">Menu</span>
         </button>
       </div>
-      
+
       <div class="minimal-menu-content" id="menuContent">
         <a href="#home" class="minimal-menu-link">
           <svg class="link-icon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
           </svg>
           Home
         </a>
+        <a href="#services" class="minimal-menu-link">
+          <svg class="link-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" />
+          </svg>
+          Services
+        </a>
         <a href="#product" class="minimal-menu-link">
           <svg class="link-icon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+            <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z" />
           </svg>
           Product
         </a>
         <a href="#therapy-epilepsy" class="minimal-menu-link">
           <svg class="link-icon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M11 2v2H7v4H5v4h2v4h4v2h2v-2h4v-4h2V8h-2V4h-4V2h-2zm2 6h4v8h-4v4H9v-4H5V8h4V4h4v4z"/>
+            <path d="M11 2v2H7v4H5v4h2v4h4v2h2v-2h4v-4h2V8h-2V4h-4V2h-2zm2 6h4v8h-4v4H9v-4H5V8h4V4h4v4z" />
           </svg>
           Epilepsy Therapy
         </a>
         <a href="#team" class="minimal-menu-link">
           <svg class="link-icon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+            <path
+              d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
           </svg>
           Team
         </a>
         <a href="#science" class="minimal-menu-link">
           <svg class="link-icon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/>
+            <path
+              d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z" />
           </svg>
           Science
         </a>
         <a href="#videos" class="minimal-menu-link">
           <svg class="link-icon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M18 3v2h-2V3H8v2H6V3H4v18h2v-2h2v2h8v-2h2v2h2V3h-2zM8 17H6v-2h2v2zm0-4H6v-2h2v2zm0-4H6V7h2v2zm10 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z"/>
+            <path
+              d="M18 3v2h-2V3H8v2H6V3H4v18h2v-2h2v2h8v-2h2v2h2V3h-2zM8 17H6v-2h2v2zm0-4H6v-2h2v2zm0-4H6V7h2v2zm10 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z" />
           </svg>
           Videos
         </a>
         <a href="#future" class="minimal-menu-link">
           <svg class="link-icon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
           </svg>
           Future
         </a>
         <a href="#coming-soon" class="minimal-menu-link">
           <svg class="link-icon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/>
+            <path
+              d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" />
           </svg>
           Coming Soon
         </a>
@@ -942,22 +1102,149 @@
     </div>
   </section>
 
+  <section id="services">
+    <div class="container">
+
+      <h1 style="text-align:center; margin-bottom:3rem;">Services</h1>
+
+      <!-- ================= HEALTH ================= -->
+      <h2>Health</h2>
+
+      <div class="services-grid">
+
+        <!-- Recovery -->
+        <a href="services/recovery/recovery_panel.html" class="service-card">
+          <div class="service-card-header">
+            <img src="images/logo/Recovery.png" alt="Recovery Logo" class="service-icon">
+            <h3>Recovery</h3>
+          </div>
+          <p class="service-description">
+            Recovery is a free neurotechnology service designed to detect, analyze, and help correct
+            abnormal neuronal electrical phenotypes. It is intended for research and supportive use
+            in conditions such as brain injury, epilepsy, and schizophrenia. By leveraging the
+            Prometeo device, Recovery provides structured EEG-based insights to better understand
+            cortical electrical behavior over time.
+          </p>
+          <div class="service-cta">Start →</div>
+        </a>
+
+        <!-- Buda Omega -->
+        <a href="services/buda_omega/buda_panel.html" class="service-card">
+          <div class="service-card-header">
+            <img src="images/logo/Buda-omega.png" alt="Buda Omega Logo" class="service-icon">
+            <h3>Buda Omega</h3>
+          </div>
+          <p class="service-description">
+            Buda Omega is a web-based service focused on anxiety detection and regulation.
+            Buda acts as your neuro-guru, guiding you through personalized meditation sessions.
+            Using real-time neurofeedback from the Prometeo device, the system adapts therapeutic
+            exercises to the neural patterns associated with stress and anxiety.
+            Are you ready to begin your anti-anxiety meditation?
+          </p>
+          <div class="service-cta">Start →</div>
+        </a>
+
+      </div>
+
+      <!-- ================= PROFESSIONAL ================= -->
+      <h2 style="margin-top:4rem;">Professional</h2>
+
+      <div class="services-grid">
+
+        <!-- OMarketing -->
+        <a href="services/omarketing/omarketing_panel.html" class="service-card">
+          <div class="service-card-header">
+            <img src="images/logo/OMarketing.png" alt="OMarketing Logo" class="service-icon">
+            <h3>O-Marketing</h3>
+          </div>
+          <p class="service-description">
+            O-Marketing is a neurofeedback platform for designers, advertisers, and creative teams.
+            Upload your logo, ad, or thumbnail, connect the Prometeo device, and observe how the
+            viewer’s brain reacts in real time. The system generates attention metrics, emotional
+            responses, and heat maps that reveal focus, dispersion, and sensory impact.
+            Improve your designs using real cognitive data.
+          </p>
+          <div class="service-cta">Start →</div>
+        </a>
+
+        <!-- OSound -->
+        <a href="services/osound/osound_panel.html" class="service-card">
+          <div class="service-card-header">
+            <img src="images/logo/Osound.png" alt="OSound Logo" class="service-icon">
+            <h3>O-Sound</h3>
+          </div>
+          <p class="service-description">
+            O-Sound allows musicians and producers to understand what happens in the listener’s brain
+            when music is played. Upload an audio file, connect the Prometeo device, and receive
+            neurofeedback about emotional response, engagement, and cognitive activation.
+            You can also explore brain responses to individual notes, chord progressions,
+            and frequency libraries through an interactive interface.
+          </p>
+          <div class="service-cta">Start →</div>
+        </a>
+
+      </div>
+
+      <!-- ================= INTROSPECTION ================= -->
+      <h2 style="margin-top:4rem;">Introspection</h2>
+
+      <div class="services-grid">
+
+        <!-- Freud Omega -->
+        <a href="services/freud_omega/freud_panel.html" class="service-card">
+          <div class="service-card-header">
+            <img src="images/logo/OFreud.png" alt="Freud Omega Logo" class="service-icon">
+            <h3>Freud-Omega</h3>
+          </div>
+          <p class="service-description">
+            Freud-Omega is a web-based psychoanalytic therapy service.
+            Through the Prometeo device, the system detects neural markers associated with traumatic
+            memories. By focusing attention on these traumatic moments, therapy can progress in a
+            structured and measurable way. Freud-Omega combines classical psychoanalysis with
+            real-time neurofeedback.
+            Are you ready to begin your psychoanalysis session?
+          </p>
+          <div class="service-cta">Start →</div>
+        </a>
+
+        <!-- OSocrates -->
+        <a href="services/osocrates/osocrates_panel.html" class="service-card">
+          <div class="service-card-header">
+            <img src="images/logo/osocrates.png" alt="OSocrates Logo" class="service-icon">
+            <h3>O-Socrates</h3>
+          </div>
+          <p class="service-description">
+            O-Socrates is a neuro-educational service designed to help you study more effectively.
+            Acting as your cognitive coach, Socrates-Omega monitors focus and fatigue to identify
+            your strongest learning states and optimal rest periods. It functions as a
+            neuro-endocrine tutor, guiding study sessions while minimizing distraction and burnout.
+          </p>
+          <div class="service-cta">Start →</div>
+        </a>
+
+      </div>
+
+    </div>
+  </section>
+
+
   <!-- Product Section -->
   <section id="product" style="background: var(--bg-alt);">
     <div class="container">
-      <h2>Prometeo Tiara — €149</h2>
-      
+      <h2>Prometeo Tiara</h2>
+
       <div class="product-showcase">
         <div>
           <img src="images/products/tyara.png" alt="Prometeo Tiara EEG Headset" class="product-image">
         </div>
-        
+
         <div class="card">
           <h3>Affordable Brain-Computer Interface</h3>
-          <p>A comfortable, wearable EEG device to explore your brain activity, track focus, and experience new human-computer interactions.</p>
-          
+          <p>A comfortable, wearable EEG device to explore your brain activity, track focus, and experience new
+            human-computer interactions.</p>
+
           <div class="price-tag">€149</div>
-          
+
           <ul class="product-features">
             <li>Real-time brain wave monitoring</li>
             <li>Comfortable tiara design</li>
@@ -965,26 +1252,28 @@
             <li>Wireless Bluetooth connectivity</li>
             <li>Early access to new features</li>
           </ul>
-          
-          <a href="https://wa.me/353899703324?text=Hi%2C%20I%20want%20to%20pre-order%20the%20Prometeo%20Tiara%20for%20%E2%82%AC149." 
-             target="_blank" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+
+          <a href="https://wa.me/353899703324?text=Hi%2C%20I%20want%20to%20pre-order%20the%20Prometeo%20Tiara%20for%20%E2%82%AC149."
+            target="_blank" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
             Pre-order via WhatsApp
           </a>
-          
+
           <p style="text-align: center; margin-top: 1rem; font-size: 0.9rem;">
             Pre-sale WhatsApp: +353 089 970 3324
           </p>
         </div>
       </div>
-      
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 3rem;">
+
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 3rem;">
         <div class="card">
           <h3>Who is it for?</h3>
           <p><strong>Students & Educators:</strong> Explore neuroscience and BCI technology in an accessible way.</p>
-          <p><strong>Developers & Researchers:</strong> Build applications and experiments with real EEG data.</p>
-          <p><strong>Creatives & Enthusiasts:</strong> Discover new ways to interact with technology using your mind.</p>
+          <p><strong>Developers & Researchers:</strong> Build services and experiments with real EEG data.</p>
+          <p><strong>Creatives & Enthusiasts:</strong> Discover new ways to interact with technology using your mind.
+          </p>
         </div>
-        
+
         <div class="card">
           <h3>What's included?</h3>
           <p>• Prometeo Tiara EEG headset</p>
@@ -1010,42 +1299,59 @@
         <div class="card">
           <h3>Enhancing Neurophysiological Follow-up</h3>
           <p>
-            Prometeo Tiara is a portable EEG device designed to enhance neurophysiological follow-up in clinical and therapeutic contexts,
-            with a particular focus on improving the frequency and practicality of electrophysiological monitoring in epilepsy-related care.
+            Prometeo Tiara is a portable EEG device designed to enhance neurophysiological follow-up in clinical and
+            therapeutic contexts,
+            with a particular focus on improving the frequency and practicality of electrophysiological monitoring in
+            epilepsy-related care.
           </p>
           <p>
-            In neurology, medication adjustments often rely on clinical observation, seizure diaries, and patient/family reports, while
-            specialized tests such as MRI are typically expensive and not repeated frequently due to logistics, waiting lists, and patient
+            In neurology, medication adjustments often rely on clinical observation, seizure diaries, and patient/family
+            reports, while
+            specialized tests such as MRI are typically expensive and not repeated frequently due to logistics, waiting
+            lists, and patient
             tolerance.
           </p>
           <p>
-            Prometeo Tiara's workflow is designed to be simple and accessible: it connects wirelessly via Bluetooth to a laptop and runs a
+            Prometeo Tiara's workflow is designed to be simple and accessible: it connects wirelessly via Bluetooth to a
+            laptop and runs a
             brief acquisition protocol that includes baseline, calibration, and structured segments.
           </p>
 
           <h3 style="margin-top: 1.5rem;">How it works</h3>
           <ul class="product-features">
-            <li><strong>Device placement:</strong> Fit the EEG headset and verify sensor contact and signal quality.</li>
-            <li><strong>Device connection:</strong> Connect wirelessly via Bluetooth to a laptop and select a structured protocol.</li>
-            <li><strong>EEG acquisition:</strong> Record EEG during baseline, calibration, and defined segments (e.g., rest, eyes open/closed).</li>
-            <li><strong>Metrics and reporting:</strong> Extract quantitative metrics (band power/ratios, segment trends) and export a brief clinical report.</li>
+            <li><strong>Device placement:</strong> Fit the EEG headset and verify sensor contact and signal quality.
+            </li>
+            <li><strong>Device connection:</strong> Connect wirelessly via Bluetooth to a laptop and select a structured
+              protocol.</li>
+            <li><strong>EEG acquisition:</strong> Record EEG during baseline, calibration, and defined segments (e.g.,
+              rest, eyes open/closed).</li>
+            <li><strong>Metrics and reporting:</strong> Extract quantitative metrics (band power/ratios, segment trends)
+              and export a brief clinical report.</li>
           </ul>
         </div>
       </div>
 
       <div class="card" style="margin-top: 2rem;">
         <p>
-          In epilepsy, this approach aims to provide clinicians with a broader monitoring loop by enabling repeated EEG recordings to
-          observe cortical electrical dynamics more frequently, in a way that is tolerable for the patient and comparable across sessions.
-          Rather than relying only on costly tests that are widely spaced over time, Prometeo Tiara introduces quantifiable measures:
-          EEG traces with signal-quality indicators, segmentation by task/condition (e.g., rest, eyes open/closed, guided exercises),
-          and spectral analysis (e.g., delta, theta, alpha, beta, and gamma band power, band ratios, and longitudinal trends). This does
-          not replace clinical evaluation or produce automatic treatment decisions, but it can provide additional measurable evidence to
+          In epilepsy, this approach aims to provide clinicians with a broader monitoring loop by enabling repeated EEG
+          recordings to
+          observe cortical electrical dynamics more frequently, in a way that is tolerable for the patient and
+          comparable across sessions.
+          Rather than relying only on costly tests that are widely spaced over time, Prometeo Tiara introduces
+          quantifiable measures:
+          EEG traces with signal-quality indicators, segmentation by task/condition (e.g., rest, eyes open/closed,
+          guided exercises),
+          and spectral analysis (e.g., delta, theta, alpha, beta, and gamma band power, band ratios, and longitudinal
+          trends). This does
+          not replace clinical evaluation or produce automatic treatment decisions, but it can provide additional
+          measurable evidence to
           discuss progression, treatment response, and electrophysiological change over time.
         </p>
         <p style="font-size: 0.95rem; margin-top: 1rem;">
-          <strong>Clinical note:</strong> Prometeo Tiara is intended as a complementary measurement and monitoring tool. It is not a
-          standalone diagnostic system, and any therapeutic or pharmacological decision must be based on comprehensive medical
+          <strong>Clinical note:</strong> Prometeo Tiara is intended as a complementary measurement and monitoring tool.
+          It is not a
+          standalone diagnostic system, and any therapeutic or pharmacological decision must be based on comprehensive
+          medical
           evaluation, clinical context, and validated protocols.
         </p>
       </div>
@@ -1056,7 +1362,7 @@
   <section id="team">
     <div class="container">
       <h2>Our Team</h2>
-      
+
       <div class="team-ui-grid">
         <!-- Tarjeta 1: Alejandro (ACTUALIZADA) -->
         <div class="ui-card">
@@ -1070,18 +1376,18 @@
               </div>
             </div>
           </div>
-          
+
           <p class="ui-card-text">
-            Founder, programmer, and full-stack developer focused on building accessible neurotechnology. 
-            Passionate about the intersection of mind, learning and technology. Leads product development, 
+            Founder, programmer, and full-stack developer focused on building accessible neurotechnology.
+            Passionate about the intersection of mind, learning and technology. Leads product development,
             research, and ensures the company stays aligned with real user needs.
           </p>
-          
+
           <div class="ui-row">
             <div class="badge badge-lime">Neurotech</div>
             <div class="badge badge-gold">Python developer</div>
           </div>
-          
+
           <div class="btn-row">
             <a href="https://www.linkedin.com/in/alejandro-rangel1/" target="_blank" class="ui-btn btn-confirm">
               <span>LinkedIn</span>
@@ -1089,19 +1395,18 @@
             <a href="https://github.com/Al-iskander2" target="_blank" class="ui-btn btn-ghost">
               <span>GitHub</span>
             </a>
-            <a href="https://wa.me/353899703324?text=Hi%20Alejandro,%20I'm%20interested%20in%20Anticipation%20Technology" 
-               target="_blank" class="ui-btn btn-ghost">
+            <a href="https://wa.me/353899703324?text=Hi%20Alejandro,%20I'm%20interested%20in%20Anticipation%20Technology"
+              target="_blank" class="ui-btn btn-ghost">
               <span>WhatsApp</span>
             </a>
           </div>
         </div>
-        
+
         <!-- Tarjeta 2: Edith (NUEVA) -->
         <div class="ui-card">
           <div class="profile-header">
             <img src="images/our_team/Business_Development.jpeg"
-                 alt="Edith Hernandez - Head of Investor Relations & Business Development"
-                 class="profile-img">
+              alt="Edith Hernandez - Head of Investor Relations & Business Development" class="profile-img">
             <div class="profile-info">
               <div class="ui-card-title">Edith Hernandez</div>
               <div class="ui-card-header">
@@ -1112,8 +1417,10 @@
           </div>
 
           <p class="ui-card-text">
-            An accomplished and driven professional with a demonstrated history of success as both a Product Owner and Business Analyst,
-            now equipped with a Master's degree in Data Analytics. Actively seeking a stimulating role to apply her remarkable
+            An accomplished and driven professional with a demonstrated history of success as both a Product Owner and
+            Business Analyst,
+            now equipped with a Master's degree in Data Analytics. Actively seeking a stimulating role to apply her
+            remarkable
             organizational and leadership capabilities in order to enhance processes and achieve team excellence.
           </p>
 
@@ -1131,13 +1438,11 @@
             </a>
           </div>
         </div>
-        
+
         <!-- Tarjeta 3: Lucía (NUEVA) -->
         <div class="ui-card">
           <div class="profile-header">
-            <img src="images/our_team/marketing.jpeg"
-                 alt="Lucía Viteri - Marketing"
-                 class="profile-img">
+            <img src="images/our_team/marketing.jpeg" alt="Lucía Viteri - Marketing" class="profile-img">
             <div class="profile-info">
               <div class="ui-card-title">Lucía Viteri</div>
               <div class="ui-card-header">
@@ -1148,8 +1453,10 @@
           </div>
 
           <p class="ui-card-text">
-            Marketing professional focused on executing ATL, BTL, and digital strategies. Experienced in communication planning,
-            content creation, advertising campaigns, social media management, and performance tracking—bringing creativity and
+            Marketing professional focused on executing ATL, BTL, and digital strategies. Experienced in communication
+            planning,
+            content creation, advertising campaigns, social media management, and performance tracking—bringing
+            creativity and
             measurable results to each project.
           </p>
 
@@ -1174,8 +1481,8 @@
         <p style="color: var(--muted); font-size: 0.95rem;">
           We're growing! Open roles in Engineering, Neuroscience, and Business Development.
           <br>
-          <a href="https://wa.me/353899703324?text=Hi,%20I'm%20interested%20in%20joining%20the%20Anticipation%20team" 
-             target="_blank" style="color: var(--brand-soft); font-weight: 600;">
+          <a href="https://wa.me/353899703324?text=Hi,%20I'm%20interested%20in%20joining%20the%20Anticipation%20team"
+            target="_blank" style="color: var(--brand-soft); font-weight: 600;">
             Contact us to join
           </a>
         </p>
@@ -1187,7 +1494,7 @@
   <section id="videos">
     <div class="container">
       <h2>Featured Videos</h2>
-      
+
       <div class="video-grid">
         <div>
           <h3>First Introduction</h3>
@@ -1195,7 +1502,7 @@
             <iframe src="https://www.youtube.com/embed/qDZnmS2xKdE" allowfullscreen></iframe>
           </div>
         </div>
-        
+
         <div>
           <h3>Power Demonstration</h3>
           <div class="video-container">
@@ -1203,7 +1510,7 @@
           </div>
         </div>
       </div>
-      
+
       <div style="text-align: center; margin-top: 2rem;">
         <a href="https://www.youtube.com/@AnticipationTechnology" target="_blank" class="btn btn-secondary">
           View More Videos
@@ -1212,66 +1519,15 @@
     </div>
   </section>
 
-  <!-- Coming Soon Section (ACTUALIZADA con 5 tarjetas) -->
-  <section id="coming-soon">
-    <div class="container">
-      <h2>Coming Soon</h2>
-      
-      <div class="coming-grid">
-        <div class="coming-card">
-          <img src="images/Comming_soon/hat.png" alt="New Hat Design" class="coming-icon">
-          <h3>New Hardware Design</h3>
-          <p>Updated form factor with improved comfort and additional sensors for better signal quality.</p>
-        </div>
-        
-        <div class="coming-card">
-          <img src="images/Comming_soon/ilearn.png" alt="Interactive Learning" class="coming-icon">
-          <h3>Interactive Learning Platform</h3>
-          <p>Educational content and interactive exercises to learn neuroscience and BCI programming.</p>
-        </div>
-        
-        <div class="coming-card">
-          <img src="images/Comming_soon/movie.png" alt="Media Control" class="coming-icon">
-          <h3>Media Control Application</h3>
-          <p>Control videos, music, and presentations using your focus and attention levels.</p>
-        </div>
-
-        <!-- Nueva tarjeta: iGame -->
-        <div class="coming-card">
-          <img src="images/Comming_soon/igame.png" alt="iGame" class="coming-icon">
-          <h3>iGame</h3>
-          <p>Upcoming neuro-enhanced gaming experiences to explore attention, focus and reaction using Prometeo Tiara.</p>
-        </div>
-
-        <!-- Nueva tarjeta: iChakra -->
-        <div class="coming-card">
-          <img src="images/Comming_soon/ichakra.png" alt="iChakra" class="coming-icon">
-          <h3>iChakra</h3>
-          <p>Mindfulness and meditation experiences powered by your own brain activity, designed for relaxation and self-awareness.</p>
-        </div>
-      </div>
-      
-      <div style="text-align: center; margin-top: 3rem;">
-        <p style="max-width: 700px; margin: 0 auto 1.5rem; color: var(--muted);">
-          We're continuously developing new features and applications for the Prometeo Tiara.
-          Join our early community to get updates and influence our development roadmap.
-        </p>
-        <a href="https://wa.me/353899703324?text=Hi%2C%20I%20want%20to%20join%20the%20early%20community%20and%20get%20updates%20on%20new%20features." 
-           target="_blank" class="btn btn-primary">
-          Join Early Community
-        </a>
-      </div>
-    </div>
-  </section>
 
   <!-- Future Section -->
   <section id="future" style="background: var(--bg-alt);">
     <div class="container">
       <h2>The Future We See</h2>
-      
+
       <div class="future-content">
         <p>We believe neurotechnology should be accessible, ethical, and empowering. Our vision:</p>
-        
+
         <ul class="future-list">
           <li><strong>Personalized Learning:</strong> Adapt content based on cognitive engagement</li>
           <li><strong>Mental Wellness Tools:</strong> Accessible meditation and focus training</li>
@@ -1290,7 +1546,7 @@
       <p style="text-align: center; max-width: 800px; margin: 0 auto 2rem; color: var(--muted);">
         Understanding brain waves and neural patterns that power the Prometeo Tiara technology.
       </p>
-      
+
       <div class="science-grid">
         <div class="science-card">
           <img src="images/science/bw1.png" alt="Brain Wave Analysis" class="science-image">
@@ -1305,7 +1561,7 @@
             </ul>
           </div>
         </div>
-        
+
         <div class="science-card">
           <img src="images/science/bw2.png" alt="EEG Signal Processing" class="science-image">
           <div class="science-content">
@@ -1320,13 +1576,14 @@
           </div>
         </div>
       </div>
-      
+
       <div class="card" style="margin-top: 3rem; text-align: center;">
         <h3>Neuroscience Research</h3>
-        <p>We collaborate with neuroscientists and researchers to validate our technology and contribute to the field of accessible neurotech.</p>
+        <p>We collaborate with neuroscientists and researchers to validate our technology and contribute to the field of
+          accessible neurotech.</p>
         <div style="margin-top: 1.5rem;">
-          <a href="https://wa.me/353899703324?text=Hi,%20I'm%20interested%20in%20the%20science%20behind%20Prometeo%20Tiara" 
-             target="_blank" class="btn btn-primary">
+          <a href="https://wa.me/353899703324?text=Hi,%20I'm%20interested%20in%20the%20science%20behind%20Prometeo%20Tiara"
+            target="_blank" class="btn btn-primary">
             Discuss Research Opportunities
           </a>
         </div>
@@ -1338,9 +1595,10 @@
   <footer>
     <div class="footer-content">
       <div class="footer-logo">ANTICIPATION</div>
-      
+
       <div class="footer-links">
         <a href="#home">Home</a>
+        <a href="#services">Services</a>
         <a href="#product">Product</a>
         <a href="#therapy-epilepsy">Epilepsy Therapy</a>
         <a href="#team">Team</a>
@@ -1349,7 +1607,7 @@
         <a href="#future">Future</a>
         <a href="#coming-soon">Soon</a>
       </div>
-      
+
       <div class="copyright">
         <p>&copy; 2025 Anticipation Technology</p>
         <p>Prometeo Tiara — €149 Pre-sale Available</p>
@@ -1359,36 +1617,14 @@
   </footer>
 
   <!-- WhatsApp Button -->
-  <a class="whatsapp-float" 
-     href="https://wa.me/353899703324?text=Hi%2C%20I%20am%20interested%20in%20the%20Prometeo%20Tiara%20pre-sale." 
-     target="_blank" 
-     aria-label="Contact us on WhatsApp">
+  <a class="whatsapp-float"
+    href="https://wa.me/353899703324?text=Hi%2C%20I%20am%20interested%20in%20the%20Prometeo%20Tiara%20pre-sale."
+    target="_blank" aria-label="Contact us on WhatsApp">
     💬
   </a>
 
   <!-- Dock solo para móvil -->
-  <div id="dock">
-    <a href="#home" class="dock-item">
-      <span style="font-size: 1.2rem;">🏠</span>
-      <span>Home</span>
-    </a>
-    <a href="#product" class="dock-item">
-      <span style="font-size: 1.2rem;">🧠</span>
-      <span>Product</span>
-    </a>
-    <a href="#therapy-epilepsy" class="dock-item">
-      <span style="font-size: 1.2rem;">⚕️</span>
-      <span>Therapy</span>
-    </a>
-    <a href="#team" class="dock-item">
-      <span style="font-size: 1.2rem;">👥</span>
-      <span>Team</span>
-    </a>
-    <a href="#science" class="dock-item">
-      <span style="font-size: 1.2rem;">🔬</span>
-      <span>Science</span>
-    </a>
-  </div>
+  <!-- Dock removed -->
 
   <!-- Script para el menú minimalista -->
   <script>
@@ -1398,17 +1634,17 @@
     const minimalMenu = document.getElementById('minimalMenu');
     const menuContent = document.getElementById('menuContent');
     const menuLinks = document.querySelectorAll('.minimal-menu-link');
-    
+
     let isMenuOpen = false;
-    
+
     // Función para abrir/cerrar el menú
     function toggleMenu() {
       isMenuOpen = !isMenuOpen;
-      
+
       // Alternar clases
       hamburgerButton.classList.toggle('open', isMenuOpen);
       minimalMenu.classList.toggle('open', isMenuOpen);
-      
+
       // Animar el menú con GSAP
       if (isMenuOpen) {
         // Abrir menú
@@ -1417,7 +1653,7 @@
           height: 48 + menuContent.scrollHeight,
           ease: "power2.out"
         });
-        
+
         // Animar enlaces
         gsap.to(menuLinks, {
           duration: 0.3,
@@ -1434,7 +1670,7 @@
           height: 48,
           ease: "power2.in"
         });
-        
+
         // Ocultar enlaces
         gsap.to(menuLinks, {
           duration: 0.2,
@@ -1444,15 +1680,15 @@
           ease: "power2.in"
         });
       }
-      
+
       // Cambiar aria-label para accesibilidad
       hamburgerButton.setAttribute('aria-label', isMenuOpen ? 'Close menu' : 'Open menu');
     }
-    
+
     // Event listeners
     menuToggle.addEventListener('click', toggleMenu);
     hamburgerButton.addEventListener('click', toggleMenu);
-    
+
     // Cerrar menú al hacer clic en un enlace
     menuLinks.forEach(link => {
       link.addEventListener('click', () => {
@@ -1461,40 +1697,40 @@
         }
       });
     });
-    
+
     // Cerrar menú al hacer clic fuera
     document.addEventListener('click', (event) => {
       if (isMenuOpen && !minimalMenu.contains(event.target)) {
         toggleMenu();
       }
     });
-    
+
     // Cerrar menú con Escape
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && isMenuOpen) {
         toggleMenu();
       }
     });
-    
+
     // Inicializar la altura del menú y los enlaces
     gsap.set(minimalMenu, { height: 48 });
     gsap.set(menuLinks, { opacity: 0, y: 10 });
-    
+
     // Highlight active dock item
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const dockItems = document.querySelectorAll('.dock-item');
-      
+
       function updateActiveDockItem() {
         const sections = document.querySelectorAll('section');
         let currentSectionId = '';
-        
+
         sections.forEach(section => {
           const rect = section.getBoundingClientRect();
           if (rect.top <= 100 && rect.bottom >= 100) {
             currentSectionId = section.id;
           }
         });
-        
+
         dockItems.forEach(item => {
           const href = item.getAttribute('href').substring(1);
           if (href === currentSectionId) {
@@ -1504,7 +1740,7 @@
           }
         });
       }
-      
+
       // Solo si el dock está visible
       if (window.innerWidth <= 768) {
         window.addEventListener('scroll', updateActiveDockItem);
@@ -1513,4 +1749,5 @@
     });
   </script>
 </body>
+
 </html>

@@ -1,0 +1,32 @@
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Development files
+*.log
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Documentation (not needed in container)
+*.md
+
+# Compressed archives
+*.zip
+*.tar.gz
+*.rar
+
+# Deployment directory itself (avoid recursion)
+deployd/
+
+# GitHub workflows (not needed in container)
+.github/
