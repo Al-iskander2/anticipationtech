@@ -225,6 +225,7 @@
     .minimal-menu-link:nth-child(6) { transition-delay: 0.3s; }
     .minimal-menu-link:nth-child(7) { transition-delay: 0.35s; }
     .minimal-menu-link:nth-child(8) { transition-delay: 0.4s; }
+    .minimal-menu-link:nth-child(9) { transition-delay: 0.45s; }
 
     .minimal-menu-link:hover {
       background-color: rgba(32, 64, 112, 0.05);
@@ -333,6 +334,107 @@
     .btn-secondary:hover {
       background: var(--brand);
     }
+
+  /* ========== SERVICES SECTION ========== */
+
+    #services h1 {
+    color: var(--brand);
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .service-card {
+    background: var(--paper);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow-soft);
+    text-decoration: none;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .service-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .service-icon {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border-radius: 10px;
+    background: var(--bg);
+    padding: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .service-card h3 {
+    font-size: 1.4rem;
+    color: var(--brand-soft);
+    margin: 0;
+  }
+
+  .service-card p {
+    font-size: 0.95rem;
+    color: var(--muted);
+    flex-grow: 1;
+    margin-bottom: 1.25rem;
+  }
+
+  .service-cta {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--brand-soft);
+    text-align: right;
+    margin-top: auto;
+    transition: color 0.2s ease;
+  }
+
+  .service-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 36px rgba(15, 23, 42, 0.15);
+  }
+
+  .service-card:hover .service-cta {
+    color: var(--brand);
+  }
+
+  /* Responsive para servicios */
+  @media (max-width: 768px) {
+    .services-grid {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .service-card {
+      padding: 1.5rem;
+    }
+    
+    .service-icon {
+      width: 45px;
+      height: 45px;
+    }
+    
+    .service-card h3 {
+      font-size: 1.25rem;
+    }
+  }
+
+    .service-description {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--muted);
+  }
 
     /* Product section */
     .product-showcase {
@@ -886,6 +988,12 @@
           </svg>
           Home
         </a>
+        <a href="#services" class="minimal-menu-link">
+          <svg class="link-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/>
+          </svg>
+          Services
+        </a>
         <a href="#product" class="minimal-menu-link">
           <svg class="link-icon" viewBox="0 0 24 24" fill="currentColor">
             <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
@@ -942,10 +1050,136 @@
     </div>
   </section>
 
+    <section id="services">
+    <div class="container">
+
+      <h1 style="text-align:center; margin-bottom:3rem;">Services</h1>
+
+      <!-- ================= HEALTH ================= -->
+      <h2>Health</h2>
+
+      <div class="services-grid">
+
+        <!-- Recovery -->
+        <a href="services/recovery/recovery_panel.html" class="service-card">
+          <div class="service-card-header">
+            <img src="images/logo/Recovery.png" alt="Recovery Logo" class="service-icon">
+            <h3>Recovery</h3>
+          </div>
+          <p class="service-description">
+            Recovery is a free neurotechnology service designed to detect, analyze, and help correct
+            abnormal neuronal electrical phenotypes. It is intended for research and supportive use
+            in conditions such as brain injury, epilepsy, and schizophrenia. By leveraging the
+            Prometeo device, Recovery provides structured EEG-based insights to better understand
+            cortical electrical behavior over time.
+          </p>
+          <div class="service-cta">Start →</div>
+        </a>
+
+        <!-- Buda Omega -->
+        <a href="services/buda_omega/buda_panel.html" class="service-card">
+          <div class="service-card-header">
+            <img src="images/logo/Buda-omega.png" alt="Buda Omega Logo" class="service-icon">
+            <h3>Buda Omega</h3>
+          </div>
+          <p class="service-description">
+            Buda Omega is a web-based service focused on anxiety detection and regulation.
+            Buda acts as your neuro-guru, guiding you through personalized meditation sessions.
+            Using real-time neurofeedback from the Prometeo device, the system adapts therapeutic
+            exercises to the neural patterns associated with stress and anxiety.
+            Are you ready to begin your anti-anxiety meditation?
+          </p>
+          <div class="service-cta">Start →</div>
+        </a>
+
+      </div>
+
+      <!-- ================= PROFESSIONAL ================= -->
+      <h2 style="margin-top:4rem;">Professional</h2>
+
+      <div class="services-grid">
+
+        <!-- OMarketing -->
+        <a href="services/omarketing/omarketing_panel.html" class="service-card">
+          <div class="service-card-header">
+            <img src="images/logo/OMarketing.png" alt="OMarketing Logo" class="service-icon">
+            <h3>O-Marketing</h3>
+          </div>
+          <p class="service-description">
+            O-Marketing is a neurofeedback platform for designers, advertisers, and creative teams.
+            Upload your logo, ad, or thumbnail, connect the Prometeo device, and observe how the
+            viewer’s brain reacts in real time. The system generates attention metrics, emotional
+            responses, and heat maps that reveal focus, dispersion, and sensory impact.
+            Improve your designs using real cognitive data.
+          </p>
+          <div class="service-cta">Start →</div>
+        </a>
+
+        <!-- OSound -->
+        <a href="services/osound/osound_panel.html" class="service-card">
+          <div class="service-card-header">
+            <img src="images/logo/Osound.png" alt="OSound Logo" class="service-icon">
+            <h3>O-Sound</h3>
+          </div>
+          <p class="service-description">
+            O-Sound allows musicians and producers to understand what happens in the listener’s brain
+            when music is played. Upload an audio file, connect the Prometeo device, and receive
+            neurofeedback about emotional response, engagement, and cognitive activation.
+            You can also explore brain responses to individual notes, chord progressions,
+            and frequency libraries through an interactive interface.
+          </p>
+          <div class="service-cta">Start →</div>
+        </a>
+
+      </div>
+
+      <!-- ================= INTROSPECTION ================= -->
+      <h2 style="margin-top:4rem;">Introspection</h2>
+
+      <div class="services-grid">
+
+        <!-- Freud Omega -->
+        <a href="services/freud_omega/freud_panel.html" class="service-card">
+          <div class="service-card-header">
+            <img src="images/logo/OFreud.png" alt="Freud Omega Logo" class="service-icon">
+            <h3>Freud-Omega</h3>
+          </div>
+          <p class="service-description">
+            Freud-Omega is a web-based psychoanalytic therapy service.
+            Through the Prometeo device, the system detects neural markers associated with traumatic
+            memories. By focusing attention on these traumatic moments, therapy can progress in a
+            structured and measurable way. Freud-Omega combines classical psychoanalysis with
+            real-time neurofeedback.
+            Are you ready to begin your psychoanalysis session?
+          </p>
+          <div class="service-cta">Start →</div>
+        </a>
+
+        <!-- OSocrates -->
+        <a href="services/osocrates/osocrates_panel.html" class="service-card">
+          <div class="service-card-header">
+            <img src="images/logo/osocrates.png" alt="OSocrates Logo" class="service-icon">
+            <h3>O-Socrates</h3>
+          </div>
+          <p class="service-description">
+            O-Socrates is a neuro-educational service designed to help you study more effectively.
+            Acting as your cognitive coach, Socrates-Omega monitors focus and fatigue to identify
+            your strongest learning states and optimal rest periods. It functions as a
+            neuro-endocrine tutor, guiding study sessions while minimizing distraction and burnout.
+          </p>
+          <div class="service-cta">Start →</div>
+        </a>
+
+      </div>
+
+    </div>
+  </section>
+
+
   <!-- Product Section -->
   <section id="product" style="background: var(--bg-alt);">
     <div class="container">
-      <h2>Prometeo Tiara — €149</h2>
+      <h2>Prometeo Tiara</h2>
       
       <div class="product-showcase">
         <div>
@@ -981,7 +1215,7 @@
         <div class="card">
           <h3>Who is it for?</h3>
           <p><strong>Students & Educators:</strong> Explore neuroscience and BCI technology in an accessible way.</p>
-          <p><strong>Developers & Researchers:</strong> Build applications and experiments with real EEG data.</p>
+          <p><strong>Developers & Researchers:</strong> Build services and experiments with real EEG data.</p>
           <p><strong>Creatives & Enthusiasts:</strong> Discover new ways to interact with technology using your mind.</p>
         </div>
         
@@ -1212,58 +1446,7 @@
     </div>
   </section>
 
-  <!-- Coming Soon Section (ACTUALIZADA con 5 tarjetas) -->
-  <section id="coming-soon">
-    <div class="container">
-      <h2>Coming Soon</h2>
-      
-      <div class="coming-grid">
-        <div class="coming-card">
-          <img src="images/Comming_soon/hat.png" alt="New Hat Design" class="coming-icon">
-          <h3>New Hardware Design</h3>
-          <p>Updated form factor with improved comfort and additional sensors for better signal quality.</p>
-        </div>
-        
-        <div class="coming-card">
-          <img src="images/Comming_soon/ilearn.png" alt="Interactive Learning" class="coming-icon">
-          <h3>Interactive Learning Platform</h3>
-          <p>Educational content and interactive exercises to learn neuroscience and BCI programming.</p>
-        </div>
-        
-        <div class="coming-card">
-          <img src="images/Comming_soon/movie.png" alt="Media Control" class="coming-icon">
-          <h3>Media Control Application</h3>
-          <p>Control videos, music, and presentations using your focus and attention levels.</p>
-        </div>
-
-        <!-- Nueva tarjeta: iGame -->
-        <div class="coming-card">
-          <img src="images/Comming_soon/igame.png" alt="iGame" class="coming-icon">
-          <h3>iGame</h3>
-          <p>Upcoming neuro-enhanced gaming experiences to explore attention, focus and reaction using Prometeo Tiara.</p>
-        </div>
-
-        <!-- Nueva tarjeta: iChakra -->
-        <div class="coming-card">
-          <img src="images/Comming_soon/ichakra.png" alt="iChakra" class="coming-icon">
-          <h3>iChakra</h3>
-          <p>Mindfulness and meditation experiences powered by your own brain activity, designed for relaxation and self-awareness.</p>
-        </div>
-      </div>
-      
-      <div style="text-align: center; margin-top: 3rem;">
-        <p style="max-width: 700px; margin: 0 auto 1.5rem; color: var(--muted);">
-          We're continuously developing new features and applications for the Prometeo Tiara.
-          Join our early community to get updates and influence our development roadmap.
-        </p>
-        <a href="https://wa.me/353899703324?text=Hi%2C%20I%20want%20to%20join%20the%20early%20community%20and%20get%20updates%20on%20new%20features." 
-           target="_blank" class="btn btn-primary">
-          Join Early Community
-        </a>
-      </div>
-    </div>
-  </section>
-
+  
   <!-- Future Section -->
   <section id="future" style="background: var(--bg-alt);">
     <div class="container">
@@ -1341,6 +1524,7 @@
       
       <div class="footer-links">
         <a href="#home">Home</a>
+        <a href="#services">Services</a>
         <a href="#product">Product</a>
         <a href="#therapy-epilepsy">Epilepsy Therapy</a>
         <a href="#team">Team</a>
@@ -1371,6 +1555,10 @@
     <a href="#home" class="dock-item">
       <span style="font-size: 1.2rem;">🏠</span>
       <span>Home</span>
+    </a>
+    <a href="#services" class="dock-item">
+      <span style="font-size: 1.2rem;">🛠️</span>
+      <span>Services</span>
     </a>
     <a href="#product" class="dock-item">
       <span style="font-size: 1.2rem;">🧠</span>

@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O-Marketing Neurofeedback Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        :root{
+            /* Paleta Anticipation (principales) */
+            --brand: #204070;        /* Azul principal (logo, logo app) */
+            --brand-soft: #486898;   /* Azul suave / hover y botones */
+            --accent-mint: #57E0C8;  /* botón de confirmar  */
+            --accent-magenta: #FA41B8; /* Magenta botón negar */
+            --bg: #F0F0F0;           /* Fondo principal claro */
+            --bg-alt: #E0E0E0;       /* Sección inferior / tarjetas */
+            --text: #0F172A;         /* Texto principal */
+            --muted: #6B7280;        /* Texto secundario */
+
+            /* Colores secundarios (de apoyo, no dominantes) */
+            --ink: #282828;          /* Texto / UI oscuro */
+            --paper: #F9F6EF;        /* Fondo tipo papel, color extra  */
+            --lime: #E3FF00;         /* Lime Jelly - highlight */
+            --azure: #4DD8FF;        /* Azure Cloud - resaltar */
+            --star: #057BC1;         /* Star of Life - acento */
+            --pink-eraser: #EDA398;  /* Pink Eraser - decorativo */
+
+            /* Extras ligeros para la tarjeta */
+            --card-border: rgba(148,163,184,0.6);
+            --shadow-soft: 0 18px 40px rgba(15,23,42,0.16);
+
+            /* Paleta de ondas cerebrales armonizada */
+            --wave-delta: #6B7CB0;     /* Delta: azul violeta suave */
+            --wave-theta: #4A8DB8;     /* Theta: azul sereno */
+            --wave-alpha: #57C4B0;     /* Alpha: verde azulado suave */
+            --wave-beta: #D4E04A;      /* Beta: amarillo verdoso suave */
+            --wave-gamma: #E67A9E;     /* Gamma: rosa magenta suave */
+            
+            /* Layout */
+            --border-radius: 4px;
+            --grid-gap: 24px;
+            --sidebar-width: 280px;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            background-color: var(--paper);
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--brand);
+            letter-spacing: -0.5px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--brand);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 900;
+            font-size: 20px;
+            border-radius: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-link {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        .nav-link.active {
+            color: var(--brand);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--brand);
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            flex: 1;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--paper);
+            border-right: 1px solid var(--card-border);
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-section {
+            padding: 0 30px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--muted);
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .project-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .project-item:hover {
+            background-color: rgba(32, 64, 112, 0.05);
+        }
+
+        .project-item.active {
+            background-color: rgba(32, 64, 112, 0.1);
+            border-left: 3px solid var(--brand);
+        }
+
+        .project-thumb {
+            width: 40px;
+            height: 40px;
+            background-color: var(--bg-alt);
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .project-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .project-info p {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: var(--grid-gap);
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .content-title {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--ink);
+        }
+
+        .content-subtitle {
+            font-size: 16px;
+            color: var(--muted);
+            font-weight: 400;
+            margin-bottom: 30px;
+        }
+
+        /* Upload Area */
+        .upload-section {
+            background-color: white;
+            border: 2px dashed var(--card-border);
+            border-radius: var(--border-radius);
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+
+        .upload-section:hover {
+            border-color: var(--brand);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: var(--brand-soft);
+            margin-bottom: 20px;
+        }
+
+        .upload-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            color: var(--muted);
+            margin-bottom: 30px;
+            max-width: 500px;
+        }
+
+        .upload-button {
+            background-color: var(--brand);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-transform: uppercase;
+        }
+
+        .upload-button:hover {
+            background-color: var(--brand-soft);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: var(--grid-gap);
+            margin-top: 20px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--card-border);
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title span {
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        /* Heatmap Visualization */
+        .heatmap-container {
+            grid-column: span 8;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .heatmap {
+            flex: 1;
+            background-color: var(--bg-alt);
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .heatmap-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 20px;
+        }
+
+        .heatmap-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(250, 65, 184, 0.1), rgba(87, 224, 200, 0.1));
+            opacity: 0.6;
+        }
+
+        .heatmap-legend {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        /* Brainwave Chart */
+        .brainwave-card {
+            grid-column: span 4;
+        }
+
+        .brainwave-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .brainwave-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brainwave-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 2px;
+        }
+
+        .brainwave-label {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .brainwave-value {
+            margin-left: auto;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .delta { background-color: var(--wave-delta); }
+        .theta { background-color: var(--wave-theta); }
+        .alpha { background-color: var(--wave-alpha); }
+        .beta { background-color: var(--wave-beta); }
+        .gamma { background-color: var(--wave-gamma); }
+
+        /* Metrics Cards */
+        .metrics-card {
+            grid-column: span 3;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--ink);
+        }
+
+        .metric-label {
+            font-size: 14px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-change {
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .positive {
+            color: var(--accent-mint);
+        }
+
+        .negative {
+            color: var(--accent-magenta);
+        }
+
+        /* Team Feedback */
+        .team-card {
+            grid-column: span 6;
+        }
+
+        .team-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .team-member {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .member-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--bg-alt);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--brand);
+        }
+
+        .member-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .member-info p {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .member-metric {
+            margin-left: auto;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            margin-top: 30px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            border: none;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-mint);
+            color: var(--ink);
+        }
+
+        .btn-primary:hover {
+            background-color: #46c0ab;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--muted);
+            border: 1px solid var(--card-border);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--bg-alt);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--paper);
+            border-top: 1px solid var(--card-border);
+            padding: 24px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-link {
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+        .footer-link:hover {
+            color: var(--brand);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+            
+            .heatmap-container {
+                grid-column: span 6;
+            }
+            
+            .brainwave-card {
+                grid-column: span 6;
+            }
+            
+            .metrics-card {
+                grid-column: span 3;
+            }
+            
+            .team-card {
+                grid-column: span 6;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--card-border);
+                padding: 20px 0;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .heatmap-container, .brainwave-card, .metrics-card, .team-card {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">O</div>
+            <span>O-MARKETING</span>
+        </div>
+        
+        <nav class="nav-links">
+            <a href="#" class="nav-link active">Dashboard</a>
+            <a href="#" class="nav-link">Projects</a>
+            <a href="#" class="nav-link">Team</a>
+            <a href="#" class="nav-link">Archive</a>
+            <a href="#" class="nav-link">Settings</a>
+        </nav>
+        
+        <div class="user-actions">
+            <div class="project-item">
+                <div class="project-thumb">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="project-info">
+                    <h4>NeuroLab</h4>
+                    <p>Active Project</p>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="main-container">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Recent Projects</div>
+                
+                <div class="project-item active">
+                    <div class="project-thumb">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <div class="project-info">
+                        <h4>Brand Logo 2024</h4>
+                        <p>Last tested: 2 hours ago</p>
+                    </div>
+                </div>
+                
+                <div class="project-item">
+                    <div class="project-thumb">
+                        <i class="fas fa-ad"></i>
+                    </div>
+                    <div class="project-info">
+                        <h4>Summer Campaign</h4>
+                        <p>Last tested: 1 day ago</p>
+                    </div>
+                </div>
+                
+                <div class="project-item">
+                    <div class="project-thumb">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <div class="project-info">
+                        <h4>Video Thumbnail</h4>
+                        <p>Last tested: 3 days ago</p>
+                    </div>
+                </div>
+                
+                <div class="project-item">
+                    <div class="project-thumb">
+                        <i class="fas fa-newspaper"></i>
+                    </div>
+                    <div class="project-info">
+                        <h4>Editorial Layout</h4>
+                        <p>Last tested: 1 week ago</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-title">Connected Devices</div>
+                
+                <div class="project-item">
+                    <div class="project-thumb" style="background-color: rgba(32, 64, 112, 0.1); color: var(--brand);">
+                        <i class="fas fa-wifi"></i>
+                    </div>
+                    <div class="project-info">
+                        <h4>Prometeo EEG-1</h4>
+                        <p>Connected • 2 testers</p>
+                    </div>
+                </div>
+                
+                <div class="project-item">
+                    <div class="project-thumb" style="background-color: rgba(87, 224, 200, 0.1); color: var(--accent-mint);">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="project-info">
+                        <h4>EyeTracker Pro</h4>
+                        <p>Ready • 1 tester</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <main class="content">
+            <div class="content-header">
+                <div>
+                    <h1 class="content-title">Neurofeedback Dashboard</h1>
+                    <p class="content-subtitle">Upload your design, connect Prometeo device, and see what happens in the viewer's brain.</p>
+                </div>
+            </div>
+            
+            <div class="upload-section">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <h2 class="upload-title">Upload Your Design</h2>
+                <p class="upload-text">Upload your logo, ad, or thumbnail design. Connect your Prometeo device, observe your design, and the system will show you what happened in the viewer's brain.</p>
+                <button class="upload-button">
+                    <i class="fas fa-upload"></i> Select Design File
+                </button>
+            </div>
+            
+            <div class="dashboard-grid">
+                <!-- Heatmap Visualization -->
+                <div class="card heatmap-container">
+                    <div class="card-title">
+                        Attention Heatmap
+                        <span>Areas of high neural engagement</span>
+                    </div>
+                    
+                    <div class="heatmap">
+                        <div class="heatmap-overlay"></div>
+                        <img src="https://images.unsplash.com/photo-1634942537034-2531766767d1?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Design with heatmap overlay" class="heatmap-img">
+                    </div>
+                    
+                    <div class="heatmap-legend">
+                        <div>Low Attention</div>
+                        <div>Medium</div>
+                        <div>High Attention</div>
+                    </div>
+                </div>
+                
+                <!-- Brainwave Chart -->
+                <div class="card brainwave-card">
+                    <div class="card-title">
+                        Brainwave Activity
+                        <span>Real-time neural responses</span>
+                    </div>
+                    
+                    <div class="brainwave-legend">
+                        <div class="brainwave-item">
+                            <div class="brainwave-color delta"></div>
+                            <div class="brainwave-label">Delta (Relaxation)</div>
+                            <div class="brainwave-value">18%</div>
+                        </div>
+                        
+                        <div class="brainwave-item">
+                            <div class="brainwave-color theta"></div>
+                            <div class="brainwave-label">Theta (Creativity)</div>
+                            <div class="brainwave-value">22%</div>
+                        </div>
+                        
+                        <div class="brainwave-item">
+                            <div class="brainwave-color alpha"></div>
+                            <div class="brainwave-label">Alpha (Calm Focus)</div>
+                            <div class="brainwave-value">31%</div>
+                        </div>
+                        
+                        <div class="brainwave-item">
+                            <div class="brainwave-color beta"></div>
+                            <div class="brainwave-label">Beta (Active Thinking)</div>
+                            <div class="brainwave-value">24%</div>
+                        </div>
+                        
+                        <div class="brainwave-item">
+                            <div class="brainwave-color gamma"></div>
+                            <div class="brainwave-label">Gamma (Peak Concentration)</div>
+                            <div class="brainwave-value">5%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Metrics Cards -->
+                <div class="card metrics-card">
+                    <div class="card-title">Attention Span</div>
+                    <div class="metric-value">8.2s</div>
+                    <div class="metric-label">Average Fixation</div>
+                    <div class="metric-change positive">
+                        <i class="fas fa-arrow-up"></i> 12% from previous test
+                    </div>
+                </div>
+                
+                <div class="card metrics-card">
+                    <div class="card-title">Emotional Engagement</div>
+                    <div class="metric-value">74%</div>
+                    <div class="metric-label">Positive Response</div>
+                    <div class="metric-change positive">
+                        <i class="fas fa-arrow-up"></i> 8% from previous test
+                    </div>
+                </div>
+                
+                <div class="card metrics-card">
+                    <div class="card-title">Memory Encoding</div>
+                    <div class="metric-value">68%</div>
+                    <div class="metric-label">Recall Probability</div>
+                    <div class="metric-change negative">
+                        <i class="fas fa-arrow-down"></i> 5% from previous test
+                    </div>
+                </div>
+                
+                <div class="card metrics-card">
+                    <div class="card-title">Visual Complexity</div>
+                    <div class="metric-value">6.4</div>
+                    <div class="metric-label">Optimal: 5.0-7.0</div>
+                    <div class="metric-change">
+                        <i class="fas fa-minus"></i> Within optimal range
+                    </div>
+                </div>
+                
+                <!-- Team Feedback -->
+                <div class="card team-card">
+                    <div class="card-title">
+                        Team Test Results
+                        <span>Neurofeedback from your designers</span>
+                    </div>
+                    
+                    <div class="team-list">
+                        <div class="team-member">
+                            <div class="member-avatar">SR</div>
+                            <div class="member-info">
+                                <h4>Sarah Rodriguez</h4>
+                                <p>Lead Designer • Tested 45 min ago</p>
+                            </div>
+                            <div class="member-metric positive">82% Engagement</div>
+                        </div>
+                        
+                        <div class="team-member">
+                            <div class="member-avatar">MJ</div>
+                            <div class="member-info">
+                                <h4>Marcus Jensen</h4>
+                                <p>UX Researcher • Tested 2 hours ago</p>
+                            </div>
+                            <div class="member-metric positive">76% Engagement</div>
+                        </div>
+                        
+                        <div class="team-member">
+                            <div class="member-avatar">TL</div>
+                            <div class="member-info">
+                                <h4>Taylor Lee</h4>
+                                <p>Art Director • Tested yesterday</p>
+                            </div>
+                            <div class="member-metric negative">64% Engagement</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-secondary">
+                    <i class="fas fa-download"></i> Export Report
+                </button>
+                <button class="btn btn-primary">
+                    <i class="fas fa-sync-alt"></i> Test with Team
+                </button>
+            </div>
+        </main>
+    </div>
+    
+    <footer class="footer">
+        <div class="copyright">
+            © 2024 O-Marketing Neurofeedback. All rights reserved.
+        </div>
+        
+        <div class="footer-links">
+            <a href="#" class="footer-link">Privacy Policy</a>
+            <a href="#" class="footer-link">Terms of Service</a>
+            <a href="#" class="footer-link">Documentation</a>
+            <a href="#" class="footer-link">Support</a>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate brainwave data updates
+            const brainwaveItems = document.querySelectorAll('.brainwave-item');
+            const metrics = document.querySelectorAll('.metric-value');
+            const uploadButton = document.querySelector('.upload-button');
+            
+            // Upload button functionality
+            uploadButton.addEventListener('click', function() {
+                alert('Design upload dialog would open here. In a real implementation, this would allow you to select an image file for analysis.');
+            });
+            
+            // Simulate live data updates for brainwaves
+            function updateBrainwaveData() {
+                brainwaveItems.forEach(item => {
+                    const valueElement = item.querySelector('.brainwave-value');
+                    let currentValue = parseInt(valueElement.textContent);
+                    
+                    // Add a small random variation to simulate live data
+                    const change = Math.floor(Math.random() * 3) - 1; // -1, 0, or 1
+                    let newValue = currentValue + change;
+                    
+                    // Keep values within reasonable bounds
+                    if (newValue < 5) newValue = 5;
+                    if (newValue > 35) newValue = 35;
+                    
+                    valueElement.textContent = newValue + '%';
+                });
+                
+                // Update metrics with slight variations
+                metrics.forEach(metric => {
+                    const currentText = metric.textContent;
+                    const isPercentage = currentText.includes('%');
+                    const isSeconds = currentText.includes('s');
+                    
+                    if (isPercentage) {
+                        const currentValue = parseInt(currentText);
+                        const change = Math.floor(Math.random() * 3) - 1;
+                        let newValue = currentValue + change;
+                        
+                        if (newValue < 50) newValue = 50;
+                        if (newValue > 95) newValue = 95;
+                        
+                        metric.textContent = newValue + '%';
+                    } else if (isSeconds) {
+                        const currentValue = parseFloat(currentText);
+                        const change = (Math.random() * 0.2) - 0.1; // -0.1 to 0.1
+                        let newValue = currentValue + change;
+                        
+                        if (newValue < 5.0) newValue = 5.0;
+                        if (newValue > 12.0) newValue = 12.0;
+                        
+                        metric.textContent = newValue.toFixed(1) + 's';
+                    } else {
+                        const currentValue = parseFloat(currentText);
+                        const change = (Math.random() * 0.2) - 0.1; // -0.1 to 0.1
+                        let newValue = currentValue + change;
+                        
+                        if (newValue < 4.0) newValue = 4.0;
+                        if (newValue > 9.0) newValue = 9.0;
+                        
+                        metric.textContent = newValue.toFixed(1);
+                    }
+                });
+            }
+            
+            // Update data every 5 seconds to simulate live feed
+            setInterval(updateBrainwaveData, 5000);
+            
+            // Project selection in sidebar
+            const projectItems = document.querySelectorAll('.project-item');
+            projectItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove active class from all items
+                    projectItems.forEach(proj => proj.classList.remove('active'));
+                    
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                    
+                    // Update the active project in header
+                    const projectName = this.querySelector('h4').textContent;
+                    const headerProject = document.querySelector('.user-actions .project-info h4');
+                    headerProject.textContent = projectName;
+                    
+                    // Show a notification
+                    alert(`Now viewing neurofeedback data for: ${projectName}`);
+                });
+            });
+            
+            // Action buttons functionality
+            const actionButtons = document.querySelectorAll('.btn');
+            actionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const btnText = this.textContent.trim();
+                    
+                    if (btnText.includes('Export Report')) {
+                        alert('Exporting neurofeedback report... This would generate a PDF with all metrics and visualizations.');
+                    } else if (btnText.includes('Test with Team')) {
+                        alert('Initiating team testing session... This would allow your team to test the design with connected Prometeo devices.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

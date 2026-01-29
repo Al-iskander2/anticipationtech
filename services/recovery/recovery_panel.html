@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Prometheus EEG | 5-Band Monitor + 3D Visualization</title>
+
+  <!-- Three.js via CDN (compatible with python -m http.server on localhost) -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --panel: rgba(0,0,0,0.45);
+      --border:#2a2f3a;
+      --text:#e6e6e6;
+      --muted:#a9b0bb;
+      --ok:#22c55e;
+      --warn:#f59e0b;
+      --bad:#ef4444;
+    }
+    *{box-sizing:border-box;font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;}
+    body{margin:0;background:var(--bg);color:var(--text);overflow:hidden;}
+    #layout{
+      position:fixed; inset:0;
+      display:grid;
+      grid-template-columns: 360px 1fr;
+      gap:12px;
+      padding:12px;
+    }
+    #panel{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+      overflow:auto;
+      backdrop-filter: blur(6px);
+    }
+    h2{margin:0 0 10px 0; font-size:16px;}
+    .section{border-top:1px solid var(--border); padding-top:12px; margin-top:12px;}
+    .row{display:flex; gap:8px; flex-wrap:wrap;}
+    button{
+      border:1px solid var(--border);
+      background:#111827;
+      color:var(--text);
+      padding:8px 10px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:600;
+    }
+    button:disabled{opacity:0.5; cursor:not-allowed;}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,0.04);
+      margin:6px 0;
+    }
+    .dot{width:10px;height:10px;border-radius:50%;}
+    .dot.ok{background:var(--ok);}
+    .dot.warn{background:var(--warn);}
+    .dot.bad{background:var(--bad);}
+    .kv{display:grid; grid-template-columns: 1fr auto; gap:6px 10px; margin-top:8px; color:var(--muted); font-size:13px;}
+    .kv b{color:var(--text); font-weight:650;}
+    .bar{
+      margin-top:10px;
+    }
+    .bar label{display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:6px;}
+    .track{
+      width:100%; height:10px; border-radius:999px;
+      background:rgba(255,255,255,0.08);
+      border:1px solid var(--border);
+      overflow:hidden;
+    }
+    .fill{height:100%; width:0%;}
+    .fill.delta{background:#5b21b6;}
+    .fill.theta{background:#10b981;}
+    .fill.alpha{background:#3b82f6;}
+    .fill.beta{background:#ef4444;}
+    .fill.gamma{background:#f59e0b;}
+
+    #mini3d{
+      width:100%;
+      height:220px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      overflow:hidden;
+      background: radial-gradient(600px 260px at 50% 30%, rgba(255,255,255,0.10), rgba(0,0,0,0) 60%);
+    }
+    #mini3d canvas{ width:100%; height:100%; display:block; }
+
+    #viewport{
+      position:relative;
+      border:1px solid var(--border);
+      border-radius:14px;
+      overflow:hidden;
+      background: radial-gradient(1200px 800px at 50% 50%, rgba(255,255,255,0.05), rgba(0,0,0,0) 70%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    #infoOverlay{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+      background:rgba(0,0,0,0.35);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:20px 24px;
+      max-width:420px;
+      backdrop-filter: blur(6px);
+      text-align:center;
+    }
+    #infoOverlay .legend{margin-top:8px; display:grid; grid-template-columns: 12px 1fr; gap:6px 8px;}
+    .sw{width:12px;height:12px;border-radius:3px;border:1px solid rgba(255,255,255,0.25);}
+    #game{width:100%; height:100%; display:block;}
+  /* -------- Central menu (Profile Management) -------- */
+#viewport{
+  display:block;
+}
+/* Keep the existing id for compatibility, but turn it into a normal container */
+#infoOverlay{
+  position:relative;
+  left:auto;
+  top:auto;
+  transform:none;
+  width:100%;
+  height:100%;
+  background:transparent;
+  border:none;
+  border-radius:0;
+  padding:0;
+  max-width:none;
+  backdrop-filter:none;
+  text-align:left;
+}
+
+#profileArea{
+  width: min(980px, 100%);
+  height:100%;
+  margin:0 auto;
+  padding:18px;
+  overflow:auto;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.profileGrid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:14px;
+  align-items:start;
+}
+@media (max-width: 900px){
+  .profileGrid{ grid-template-columns: 1fr; }
+}
+.cardX{
+  background:rgba(0,0,0,0.35);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:16px;
+  backdrop-filter: blur(6px);
+}
+.cardX h2{
+  margin:0 0 12px 0;
+  font-size:16px;
+}
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.help{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:-4px;
+}
+input[type="text"], input[type="number"], select, textarea{
+  width:100%;
+  border:1px solid var(--border);
+  background: rgba(17,24,39,0.85);
+  color:var(--text);
+  padding:10px 12px;
+  border-radius:12px;
+  outline:none;
+}
+textarea{ min-height:96px; resize:vertical; }
+.consentRow{
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.3;
+  margin-top:4px;
+}
+.consentRow input{ margin-top:2px; }
+  </style>
+</head>
+
+<body>
+  <div id="layout">
+    <aside id="panel">
+      <h2>Prometheus (BLE) → 5 Bands → 3D Brain</h2>
+
+      <div class="pill" title="Web Bluetooth works in secure context: https or localhost.">
+        <span id="connDot" class="dot bad"></span>
+        <span id="connText">Disconnected</span>
+      </div>
+
+      <div class="row">
+        <button id="btnConnect">Connect</button>
+        <button id="btnFinish" disabled>Finish</button>
+      </div>
+
+      <div class="kv">
+        <span>Device</span><b id="deviceName">—</b>
+        <span>Packets/s</span><b id="pps">—</b>
+        <span>Last packet</span><b id="lastPkt">—</b>
+        <span>Loss (estimated)</span><b id="lossRate">—</b>
+        <span>Sampling frequency (estimated)</span><b id="fsEst">—</b>
+      </div>
+
+      <div class="section">
+        <h2>EEG Bands (normalized)</h2>
+
+        <div class="bar">
+          <label><span>Delta (0.5-4 Hz)</span><span id="deltaVal">0.00</span></label>
+          <div class="track"><div id="deltaFill" class="fill delta"></div></div>
+        </div>
+
+        <div class="bar">
+          <label><span>Theta (4-8 Hz)</span><span id="thetaVal">0.00</span></label>
+          <div class="track"><div id="thetaFill" class="fill theta"></div></div>
+        </div>
+
+        <div class="bar">
+          <label><span>Alpha (8-12 Hz)</span><span id="alphaVal">0.00</span></label>
+          <div class="track"><div id="alphaFill" class="fill alpha"></div></div>
+        </div>
+
+        <div class="bar">
+          <label><span>Beta (12-30 Hz)</span><span id="betaVal">0.00</span></label>
+          <div class="track"><div id="betaFill" class="fill beta"></div></div>
+        </div>
+
+        <div class="bar">
+          <label><span>Gamma (30-80 Hz)</span><span id="gammaVal">0.00</span></label>
+          <div class="track"><div id="gammaFill" class="fill gamma"></div></div>
+        </div>
+
+        <div class="kv" style="margin-top:10px;">
+          <span>Dominant Band</span><b id="dominant">—</b>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>3D Brain View</h2>
+        <div id="mini3d">
+          <canvas id="game"></canvas>
+        </div>
+      </div>
+    </aside>
+
+    <main id="viewport">
+      <div id="infoOverlay">
+        <div id="profileArea" aria-label="Profile management">
+          <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+            <div>
+              <div style="font-size:14px;color:var(--muted);letter-spacing:0.2px;">Central Visualization Area</div>
+              <div style="font-size:20px;font-weight:750;margin-top:4px;">Profile Management</div>
+            </div>
+            <div class="pill" title="Profiles are stored locally in your browser.">
+              <span class="dot warn"></span>
+              <span>Local storage</span>
+            </div>
+          </div>
+
+          <div class="profileGrid">
+            <section class="cardX" id="selectProfileCard">
+              <h2>Select Profile</h2>
+              <div class="field">
+                <label for="profileSelect" class="help">Choose an existing patient/session profile</label>
+                <select id="profileSelect">
+                  <option value="">-- Select Existing --</option>
+                </select>
+                <button id="btnSelectProfile" disabled>Continue with Selected</button>
+              </div>
+            </section>
+
+            <section class="cardX">
+              <h2>Create New Profile</h2>
+              <form id="profileForm" class="field">
+                <input type="text" id="name" placeholder="Name / ID" required>
+                <input type="number" id="age" placeholder="Age" required>
+                <select id="sex" required>
+                  <option value="">Sex</option>
+                  <option value="M">Male</option>
+                  <option value="F">Female</option>
+                  <option value="O">Other</option>
+                </select>
+                <input type="text" id="medication" placeholder="Medication (optional)">
+                <textarea id="notes" placeholder="Clinical Notes / Observations"></textarea>
+
+                <label class="consentRow">
+                  <input type="checkbox" id="consent" required style="width:auto;">
+                  <span>I confirm informed consent</span>
+                </label>
+
+                <button type="submit" id="btnCreateProfile">Create and Continue</button>
+                <div class="help">Tip: keep the browser tab open during acquisition to avoid losing local profile state.</div>
+              </form>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="./index.js"></script>
+
+</body>
+</html>

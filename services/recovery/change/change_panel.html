@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Prometeo EEG Games</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0 auto;
+            padding: 16px;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #020617;
+            color: #e5e7eb;
+            width: 800px;
+            height: 800px;
+            overflow: hidden;
+        }
+        
+        header {
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        
+        h1 {
+            margin: 0 0 4px;
+            font-size: 24px;
+            background: linear-gradient(45deg, #22c55e, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        #status {
+            font-size: 14px;
+            color: #9ca3af;
+        }
+        
+        #controls {
+            margin: 12px 0 16px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        button {
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        #connect-btn {
+            background: #22c55e;
+            color: #022c22;
+        }
+        
+        #disconnect-btn {
+            background: #ef4444;
+            color: #fef2f2;
+        }
+        
+        .game-screen {
+            text-align: center;
+            padding: 20px;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #instructions-screen {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 40px;
+            margin: 20px 0;
+            border: 1px solid #334155;
+        }
+        
+        .instructions-text {
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        
+        .game-image {
+            max-width: 350px;
+            max-height: 350px;
+            margin: 20px auto;
+            display: block;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+        }
+        
+        .game-image:hover {
+            transform: scale(1.02);
+        }
+        
+        .metrics {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+        
+        .metric {
+            padding: 12px;
+            border-radius: 12px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            transition: all 0.3s ease;
+        }
+        
+        .metric:hover {
+            border-color: #22c55e;
+            transform: translateY(-2px);
+        }
+        
+        .metric-label {
+            color: #9ca3af;
+            font-size: 12px;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        
+        .metric-value {
+            font-weight: 700;
+            font-size: 16px;
+        }
+        
+        .power-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .power-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #9ca3af;
+        }
+        
+        .power-bar {
+            width: 100%;
+            height: 24px;
+            background: #374151;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .power-level {
+            height: 100%;
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #22c55e);
+            border-radius: 12px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+        
+        .power-marker {
+            position: absolute;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: rgba(255,255,255,0.8);
+            z-index: 2;
+        }
+        
+        .power-threshold {
+            position: absolute;
+            top: -20px;
+            font-size: 11px;
+            color: #22c55e;
+            white-space: nowrap;
+        }
+        
+        .game-instruction {
+            font-size: 18px;
+            margin: 15px 0;
+            color: #f59e0b;
+            font-weight: 600;
+        }
+        
+        .game-hint {
+            font-size: 14px;
+            color: #9ca3af;
+            margin-top: 10px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .concentration-feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background: #1e293b;
+            border-left: 4px solid #22c55e;
+            font-size: 14px;
+        }
+        
+        .feedback-low {
+            border-left-color: #ef4444;
+            color: #fca5a5;
+        }
+        
+        .feedback-good {
+            border-left-color: #22c55e;
+            color: #86efac;
+        }
+        
+        .feedback-high {
+            border-left-color: #f59e0b;
+            color: #fde047;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Prometeo EEG Games</h1>
+        <div id="status">Status: <span id="status-text">Disconnected</span></div>
+    </header>
+
+    <section id="controls">
+        <button id="connect-btn">Connect Device</button>
+        <button id="disconnect-btn" disabled>Disconnect</button>
+    </section>
+
+    <div id="game-container">
+        <!-- Instructions Screen -->
+        <div id="instructions-screen" class="game-screen">
+            <h2>Welcome to Brain-Controlled Games 🧠</h2>
+            <div class="instructions-text">
+                <p>This demo includes mental mini-games controlled by your brain activity.</p>
+                <p><strong>How to get the best results:</strong></p>
+                <ul style="text-align: left; margin: 20px;">
+                    <li>💺 Sit comfortably and stay relaxed</li>
+                    <li>👀 Avoid moving your eyes or tensing facial muscles</li>
+                    <li>🌬️ Breathe deeply and maintain calm focus</li>
+                    <li>⚡ No need to strain - just concentrate smoothly</li>
+                </ul>
+                <p><strong>Press SPACE to start the Light Bulb game...</strong></p>
+            </div>
+        </div>
+
+        <!-- Bulb Game -->
+        <div id="bulb-game" class="game-screen hidden">
+           
+            <div class="game-instruction">Concentrate to turn ON, Relax to turn OFF</div>
+            <img id="game-image" class="game-image" alt="Light Bulb">
+            <div class="concentration-feedback" id="bulb-feedback">
+                Current: Relaxed - Light is OFF
+            </div>
+            <div class="game-hint">Press SPACE for Katana game</div>
+        </div>
+
+        <!-- Katana Game -->
+        <div id="katana-game" class="game-screen hidden">
+           
+            <div class="game-instruction">Concentrate to perform a powerful slash!</div>
+            <img id="katana-image" class="game-image" alt="Katana">
+            <div class="concentration-feedback" id="katana-feedback">
+                Ready... Focus to slash!
+            </div>
+            <div class="game-hint">Press SPACE for Light Bulb game</div>
+        </div>
+    </div>
+
+    <!-- Concentration Power Bar -->
+    <div class="power-container">
+        <div class="power-label">
+            <span>Low Concentration</span>
+            <span id="current-power">0%</span>
+            <span>High Concentration</span>
+        </div>
+        <div class="power-bar">
+            <div class="power-level" id="power-level" style="width: 0%"></div>
+            <div class="power-marker" id="on-threshold-marker" style="left: 60%">
+                <div class="power-threshold">ON Threshold</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="metrics">
+        <div class="metric">
+            <div class="metric-label">Beta Power</div>
+            <div class="metric-value" id="beta-power">0.00</div>
+        </div>
+        <div class="metric">
+            <div class="metric-label">Game State</div>
+            <div class="metric-value" id="game-state">OFF</div>
+        </div>
+        <div class="metric">
+            <div class="metric-label">Connection</div>
+            <div class="metric-value" id="connection-status">Disconnected</div>
+        </div>
+        <div class="metric">
+            <div class="metric-label">Packets Received</div>
+            <div class="metric-value" id="packets-received">0</div>
+        </div>
+    </div>
+
+    <script src="fft.js"></script>
+    <script src="game.js"></script>
+    <!--perro-->
+    
+</body>
+</html>

@@ -1,0 +1,1232 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>O-sound | Neurofeedback Musical</title>
+
+  <!-- Three.js via CDN -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --surface-light: #1a1a1a;
+      --border: #2a2a2a;
+      --text: #f0f0f0;
+      --text-muted: #888888;
+      --text-light: #ffffff;
+      --primary: #4a6fff;
+      --secondary: #00c39a;
+      --accent: #ff6b4a;
+      --delta: #4a6fff;
+      --theta: #00c39a;
+      --alpha: #9d4eff;
+      --beta: #ffaa4a;
+      --gamma: #ff4a6b;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    #layout {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      grid-template-columns: 280px 1fr 320px;
+      gap: 1px;
+      background: var(--border);
+    }
+
+    /* ===== PANEL LATERAL IZQUIERDO (Conexión) ===== */
+    #left-panel {
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Header */
+    .header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .app-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      letter-spacing: -0.02em;
+      color: var(--text-light);
+    }
+
+    .app-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* Connection Status */
+    .connection-section {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #666;
+    }
+
+    .status-dot.connected {
+      background: var(--secondary);
+      box-shadow: 0 0 8px var(--secondary);
+    }
+
+    .status-dot.receiving {
+      background: var(--accent);
+      animation: pulse 1.5s infinite;
+    }
+
+    .status-text {
+      flex: 1;
+    }
+
+    .status-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      display: block;
+    }
+
+    .status-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .connection-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-light);
+      line-height: 1.2;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Logs */
+    .logs-section {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    #logs {
+      flex: 1;
+      overflow-y: auto;
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      font-family: 'SF Mono', 'Roboto Mono', monospace;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .log-entry {
+      margin-bottom: 8px;
+      color: var(--text-muted);
+    }
+
+    .log-entry.info { color: var(--text); }
+    .log-entry.success { color: var(--secondary); }
+    .log-entry.error { color: var(--accent); }
+    .log-entry.warning { color: var(--beta); }
+
+    .log-time {
+      color: #666;
+      margin-right: 8px;
+    }
+
+    /* ===== ÁREA CENTRAL (Teclado y Canciones) ===== */
+    #center-area {
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Área de carga de canciones */
+    .upload-section {
+      padding: 30px 40px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-light);
+    }
+
+    .upload-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .upload-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-light);
+    }
+
+    .upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: rgba(42, 42, 42, 0.3);
+      position: relative;
+    }
+
+    .upload-area:hover {
+      border-color: var(--primary);
+      background: rgba(74, 111, 255, 0.1);
+    }
+
+    .upload-area.dragover {
+      border-color: var(--primary);
+      background: rgba(74, 111, 255, 0.15);
+    }
+
+    .upload-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 16px;
+      background: var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .upload-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--text-muted);
+    }
+
+    .upload-text {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+
+    .upload-subtext {
+      font-size: 12px;
+      color: var(--text-muted);
+      opacity: 0.7;
+    }
+
+    .file-info {
+      margin-top: 20px;
+      padding: 16px;
+      background: var(--surface);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      display: none;
+    }
+
+    .file-info.show {
+      display: block;
+    }
+
+    .file-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 8px;
+    }
+
+    .file-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Área del piano */
+    .piano-section {
+      flex: 1;
+      padding: 30px 40px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .piano-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .piano-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-light);
+    }
+
+    .current-note-display {
+      font-size: 14px;
+      color: var(--text-muted);
+      background: var(--surface-light);
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      min-width: 120px;
+      text-align: center;
+    }
+
+    .piano-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto auto;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .select {
+      padding: 10px 14px;
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .select:hover {
+      border-color: var(--primary);
+    }
+
+    .octave-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .octave-btn {
+      width: 32px;
+      height: 32px;
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .octave-btn:hover {
+      background: var(--border);
+      border-color: var(--primary);
+    }
+
+    .octave-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      min-width: 28px;
+      text-align: center;
+    }
+
+    .piano-container {
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .piano-keys {
+      flex: 1;
+      display: flex;
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .key {
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: 0 0 6px 6px;
+      margin: 0 2px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.1s;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 10px;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .key.white {
+      background: linear-gradient(to bottom, #fff 0%, #f0f0f0 100%);
+      z-index: 1;
+      height: 100%;
+    }
+
+    .key.black {
+      background: linear-gradient(to bottom, #333 0%, #222 100%);
+      width: 65%;
+      height: 65%;
+      margin-left: -32.5%;
+      margin-right: -32.5%;
+      z-index: 2;
+      position: absolute;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .key.active {
+      transform: translateY(4px);
+      box-shadow: inset 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    .key.white.active {
+      background: linear-gradient(to bottom, #e0e0e0 0%, #d0d0d0 100%);
+    }
+
+    .key.black.active {
+      background: linear-gradient(to bottom, #222 0%, #111 100%);
+    }
+
+    /* ===== PANEL LATERAL DERECHO (Frecuencias y Actividad) ===== */
+    #right-panel {
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Section Common Styles */
+    .section {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Catalog */
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .catalog-item {
+      padding: 16px;
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .catalog-item:hover {
+      border-color: var(--primary);
+      background: rgba(74, 111, 255, 0.05);
+      transform: translateY(-2px);
+    }
+
+    .freq-value {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-light);
+      margin-bottom: 6px;
+    }
+
+    .freq-name {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Brain Activity */
+    .bands-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .band {
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .band-name {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+
+    .band-value {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-light);
+      margin-bottom: 8px;
+    }
+
+    .band-progress {
+      width: 100%;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .band-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    .band-delta .band-fill { background: var(--delta); }
+    .band-theta .band-fill { background: var(--theta); }
+    .band-alpha .band-fill { background: var(--alpha); }
+    .band-beta .band-fill { background: var(--beta); }
+    .band-gamma .band-fill { background: var(--gamma); }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px 16px;
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn:hover {
+      background: var(--border);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: rgba(74, 111, 255, 0.9);
+    }
+
+    .btn-secondary {
+      background: var(--secondary);
+      border-color: var(--secondary);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(0, 195, 154, 0.9);
+    }
+
+    /* 3D Viewport */
+    #viewport {
+      display: none; /* Ocultamos la vista 3D para este diseño */
+    }
+
+    /* Animations */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      #layout {
+        grid-template-columns: 240px 1fr 280px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      #layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr auto;
+      }
+      
+      #left-panel, #right-panel {
+        max-height: 300px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="layout">
+    <!-- LEFT PANEL: Conexión y Registros -->
+    <aside id="left-panel">
+      <!-- Header -->
+      <div class="header">
+        <div class="app-title">O-SOUND</div>
+        <div class="app-subtitle">Neurofeedback Musical</div>
+      </div>
+
+      <!-- Connection Status -->
+      <div class="connection-section">
+        <div class="status-indicator">
+          <div class="status-dot" id="connDot"></div>
+          <div class="status-text">
+            <span class="status-label">Estado BLE</span>
+            <span class="status-value" id="connText">Desconectado</span>
+          </div>
+        </div>
+        
+        <div class="controls">
+          <button class="btn btn-primary" id="btnConnect">Conectar</button>
+          <button class="btn" id="btnDisconnect" disabled>Desconectar</button>
+        </div>
+        
+        <div class="connection-stats">
+          <div class="stat">
+            <div class="stat-value" id="pps">0</div>
+            <div class="stat-label">Paquetes/s</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="fsEst">0 Hz</div>
+            <div class="stat-label">Muestreo</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Logs -->
+      <div class="logs-section">
+        <div class="section-header">
+          <div class="section-title">Registro</div>
+          <button class="btn" id="btnClearLogs" style="padding: 4px 8px; font-size: 11px;">Limpiar</button>
+        </div>
+        <div id="logs"></div>
+      </div>
+    </aside>
+
+    <!-- CENTER AREA: Teclado y Carga de Canciones -->
+    <main id="center-area">
+      <!-- Área de Carga de Canciones -->
+      <div class="upload-section">
+        <div class="upload-header">
+          <div class="upload-title">Subir Canción</div>
+          <button class="btn" id="btnAnalyze" disabled style="padding: 10px 20px;">Analizar</button>
+        </div>
+        
+        <div class="upload-area" id="uploadArea">
+          <div class="upload-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <div class="upload-text">
+            Arrastra archivo de audio o haz clic para seleccionar
+          </div>
+          <div class="upload-subtext">
+            Formatos soportados: MP3, WAV, FLAC, M4A
+          </div>
+          <input type="file" id="fileInput" accept="audio/*" style="display: none;">
+        </div>
+        
+        <div class="file-info" id="fileInfo">
+          <div class="file-name" id="fileName"></div>
+          <div class="file-meta">
+            <span id="fileSize"></span>
+            <span id="fileDuration"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Área del Piano -->
+      <div class="piano-section">
+        <div class="piano-header">
+          <div class="piano-title">Piano de Prueba</div>
+          <div class="current-note-display" id="currentNote">—</div>
+        </div>
+        
+        <div class="piano-controls">
+          <select class="select" id="scaleSelect">
+            <option value="major">Mayor</option>
+            <option value="minor">Menor</option>
+            <option value="pentatonic">Pentatónica</option>
+          </select>
+          <select class="select" id="keySelect">
+            <option value="C">C</option>
+            <option value="D">D</option>
+            <option value="E">E</option>
+            <option value="F">F</option>
+            <option value="G">G</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+          </select>
+          <div class="octave-control">
+            <button class="octave-btn" id="btnOctaveDown">-</button>
+            <div class="octave-value" id="currentOctave">4</div>
+            <button class="octave-btn" id="btnOctaveUp">+</button>
+          </div>
+        </div>
+        
+        <div class="piano-container">
+          <div class="piano-keys" id="pianoKeys"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- RIGHT PANEL: Frecuencias y Actividad Cerebral -->
+    <aside id="right-panel">
+      <!-- Catálogo de Frecuencias -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">Frecuencias</div>
+          <button class="btn" id="btnOpenCatalog" style="padding: 6px 12px; font-size: 12px;">Catálogo</button>
+        </div>
+        
+        <div class="catalog-grid">
+          <div class="catalog-item" data-freq="7.83" data-name="Schumann">
+            <div class="freq-value">7.83 Hz</div>
+            <div class="freq-name">Schumann</div>
+          </div>
+          <div class="catalog-item" data-freq="432" data-name="Universal">
+            <div class="freq-value">432 Hz</div>
+            <div class="freq-name">Universal</div>
+          </div>
+          <div class="catalog-item" data-freq="528" data-name="Love">
+            <div class="freq-value">528 Hz</div>
+            <div class="freq-name">Amor</div>
+          </div>
+          <div class="catalog-item" data-freq="963" data-name="Divine">
+            <div class="freq-value">963 Hz</div>
+            <div class="freq-name">Divina</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actividad Cerebral -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">Actividad Cerebral</div>
+          <div style="font-size: 12px; color: var(--text-muted);" id="dominantBand">—</div>
+        </div>
+        
+        <div class="bands-container">
+          <div class="band band-delta">
+            <div class="band-name">Delta</div>
+            <div class="band-value" id="deltaVal">0.00</div>
+            <div class="band-progress">
+              <div class="band-fill" id="deltaFill"></div>
+            </div>
+          </div>
+          <div class="band band-theta">
+            <div class="band-name">Theta</div>
+            <div class="band-value" id="thetaVal">0.00</div>
+            <div class="band-progress">
+              <div class="band-fill" id="thetaFill"></div>
+            </div>
+          </div>
+          <div class="band band-gamma">
+            <div class="band-name">Gamma</div>
+            <div class="band-value" id="gammaVal">0.00</div>
+            <div class="band-progress">
+              <div class="band-fill" id="gammaFill"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script type="module">
+    // Audio context for piano and frequencies
+    let audioContext = null;
+    let currentOscillator = null;
+    let currentFrequency = null;
+    let isRecordingNote = false;
+    let currentNoteName = '';
+    let brainData = {
+      delta: 0,
+      theta: 0,
+      alpha: 0,
+      beta: 0,
+      gamma: 0,
+      dominant: 'none',
+      state: 'idle'
+    };
+    
+    // Initialize piano
+    function initPiano() {
+      const pianoKeys = document.getElementById('pianoKeys');
+      const whiteKeys = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+      const blackKeys = ['C#', 'D#', '', 'F#', 'G#', 'A#'];
+      
+      pianoKeys.innerHTML = '';
+      
+      // Create white keys
+      whiteKeys.forEach((note, index) => {
+        const key = document.createElement('div');
+        key.className = 'key white';
+        key.dataset.note = note;
+        key.textContent = note;
+        key.style.marginLeft = index === 0 ? '0' : '-5px';
+        
+        key.addEventListener('mousedown', () => playNote(note));
+        key.addEventListener('mouseup', () => stopNote());
+        key.addEventListener('mouseleave', () => stopNote());
+        
+        pianoKeys.appendChild(key);
+      });
+      
+      // Create black keys
+      blackKeys.forEach((note, index) => {
+        if (!note) return;
+        
+        const key = document.createElement('div');
+        key.className = 'key black';
+        key.dataset.note = note;
+        key.textContent = note.replace('#', '♯');
+        key.style.left = `${(index + 1) * 14.28}%`;
+        
+        key.addEventListener('mousedown', () => playNote(note));
+        key.addEventListener('mouseup', () => stopNote());
+        key.addEventListener('mouseleave', () => stopNote());
+        
+        pianoKeys.appendChild(key);
+      });
+    }
+    
+    // Play a note
+    async function playNote(note) {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      
+      if (audioContext.state === 'suspended') {
+        await audioContext.resume();
+      }
+      
+      if (currentOscillator) {
+        currentOscillator.stop();
+        currentOscillator = null;
+      }
+      
+      const octave = parseInt(document.getElementById('currentOctave').textContent);
+      const frequency = getFrequencyForNote(note, octave);
+      
+      currentOscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      currentOscillator.type = 'sine';
+      currentOscillator.frequency.value = frequency;
+      gainNode.gain.value = 0.2;
+      
+      currentOscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      currentOscillator.start();
+      currentFrequency = frequency;
+      
+      document.getElementById('currentNote').textContent = `${note}${octave} (${frequency.toFixed(1)} Hz)`;
+      
+      document.querySelectorAll(`.key[data-note="${note}"]`).forEach(key => {
+        key.classList.add('active');
+      });
+      
+      if (isEEGConnected()) {
+        startRecordingForNote(note, octave, frequency);
+      }
+    }
+    
+    // Stop playing note
+    function stopNote() {
+      if (currentOscillator) {
+        currentOscillator.stop();
+        currentOscillator = null;
+      }
+      
+      document.querySelectorAll('.key.active').forEach(key => {
+        key.classList.remove('active');
+      });
+      
+      if (isRecordingNote) {
+        stopRecordingForNote();
+      }
+    }
+    
+    // Get frequency for note
+    function getFrequencyForNote(note, octave) {
+      const noteFrequencies = {
+        'C': 261.63, 'C#': 277.18, 'D': 293.66, 'D#': 311.13,
+        'E': 329.63, 'F': 349.23, 'F#': 369.99, 'G': 392.00,
+        'G#': 415.30, 'A': 440.00, 'A#': 466.16, 'B': 493.88
+      };
+      
+      const baseFreq = noteFrequencies[note] || 440;
+      const octaveFactor = Math.pow(2, octave - 4);
+      return baseFreq * octaveFactor;
+    }
+    
+    // Start recording brain activity
+    function startRecordingForNote(note, octave, frequency) {
+      isRecordingNote = true;
+      currentNoteName = `${note}${octave}`;
+      
+      sendMarker('note_start', {
+        note: note,
+        octave: octave,
+        frequency: frequency,
+        timestamp: Date.now()
+      });
+      
+      addLog(`Grabando actividad para nota: ${note}${octave}`, 'info');
+    }
+    
+    // Stop recording
+    function stopRecordingForNote() {
+      isRecordingNote = false;
+      
+      sendMarker('note_end', {
+        note: currentNoteName.split('')[0],
+        octave: parseInt(currentNoteName.split('')[1]),
+        duration: 2000,
+        timestamp: Date.now()
+      });
+      
+      addLog(`Grabación completada: ${currentNoteName}`, 'success');
+      currentNoteName = '';
+    }
+    
+    // Play frequency from catalog
+    function playFrequency(freq, name) {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+      
+      if (currentOscillator) {
+        currentOscillator.stop();
+        currentOscillator = null;
+      }
+      
+      currentOscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      currentOscillator.type = 'sine';
+      currentOscillator.frequency.value = freq;
+      gainNode.gain.value = 0.2;
+      
+      currentOscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      currentOscillator.start();
+      currentFrequency = freq;
+      
+      sendMarker('frequency_start', {
+        frequency: freq,
+        name: name,
+        timestamp: Date.now()
+      });
+      
+      addLog(`Reproduciendo frecuencia: ${name} (${freq} Hz)`, 'info');
+    }
+    
+    // Stop frequency
+    function stopFrequency() {
+      if (currentOscillator) {
+        currentOscillator.stop();
+        currentOscillator = null;
+      }
+      
+      sendMarker('frequency_end', {
+        frequency: currentFrequency,
+        timestamp: Date.now()
+      });
+      
+      addLog(`Frecuencia detenida`, 'info');
+    }
+    
+    // Update brain bands display
+    function updateBrainBands(delta, theta, alpha, beta, gamma) {
+      brainData.delta = delta;
+      brainData.theta = theta;
+      brainData.alpha = alpha;
+      brainData.beta = beta;
+      brainData.gamma = gamma;
+      
+      // Update values (clamp to 0-1)
+      document.getElementById('deltaVal').textContent = Math.min(1, delta).toFixed(2);
+      document.getElementById('thetaVal').textContent = Math.min(1, theta).toFixed(2);
+      document.getElementById('gammaVal').textContent = Math.min(1, gamma).toFixed(2);
+      
+      // Update progress bars (clamp to 100%)
+      document.getElementById('deltaFill').style.width = `${Math.min(100, delta * 100)}%`;
+      document.getElementById('thetaFill').style.width = `${Math.min(100, theta * 100)}%`;
+      document.getElementById('gammaFill').style.width = `${Math.min(100, gamma * 100)}%`;
+      
+      // Determine dominant band
+      const bands = { delta, theta, alpha, beta, gamma };
+      const max = Math.max(...Object.values(bands));
+      const dominant = Object.keys(bands).find(key => bands[key] === max);
+      
+      const states = {
+        'delta': 'Relajado',
+        'theta': 'Creativo',
+        'alpha': 'Calmado',
+        'beta': 'Concentrado',
+        'gamma': 'Atención máxima'
+      };
+      
+      brainData.dominant = dominant;
+      brainData.state = states[dominant] || 'Neutral';
+      
+      document.getElementById('dominantBand').textContent = states[dominant] || '—';
+    }
+    
+    // Check if EEG is connected
+    function isEEGConnected() {
+      return document.getElementById('connDot').classList.contains('connected');
+    }
+    
+    // Send marker to backend
+    function sendMarker(type, data) {
+      console.log('Marker:', type, data);
+    }
+    
+    // Add log entry
+    function addLog(message, type = 'info') {
+      const logs = document.getElementById('logs');
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      entry.innerHTML = `<span class="log-time">${time}</span> ${message}`;
+      
+      logs.appendChild(entry);
+      logs.scrollTop = logs.scrollHeight;
+    }
+    
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      initPiano();
+      
+      // File upload
+      const uploadArea = document.getElementById('uploadArea');
+      const fileInput = document.getElementById('fileInput');
+      const fileInfo = document.getElementById('fileInfo');
+      
+      uploadArea.addEventListener('click', () => fileInput.click());
+      uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+      });
+      uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+      });
+      uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        
+        if (e.dataTransfer.files.length) {
+          handleFileSelect(e.dataTransfer.files[0]);
+        }
+      });
+      
+      fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length) {
+          handleFileSelect(e.target.files[0]);
+        }
+      });
+      
+      // Piano controls
+      document.getElementById('btnOctaveUp').addEventListener('click', () => {
+        const octaveEl = document.getElementById('currentOctave');
+        let octave = parseInt(octaveEl.textContent);
+        if (octave < 7) {
+          octaveEl.textContent = octave + 1;
+        }
+      });
+      
+      document.getElementById('btnOctaveDown').addEventListener('click', () => {
+        const octaveEl = document.getElementById('currentOctave');
+        let octave = parseInt(octaveEl.textContent);
+        if (octave > 1) {
+          octaveEl.textContent = octave - 1;
+        }
+      });
+      
+      // Frequency catalog
+      document.querySelectorAll('.catalog-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const freq = parseFloat(item.dataset.freq);
+          const name = item.dataset.name;
+          playFrequency(freq, name);
+        });
+      });
+      
+      // Logs clear
+      document.getElementById('btnClearLogs').addEventListener('click', () => {
+        document.getElementById('logs').innerHTML = '';
+      });
+      
+      // Update brain bands periodically (simulated)
+      setInterval(() => {
+        if (isEEGConnected()) {
+          // Simulate brain data - in real app, this would come from EEG
+          const delta = 0.2 + Math.random() * 0.3;
+          const theta = 0.1 + Math.random() * 0.4;
+          const alpha = 0.3 + Math.random() * 0.3;
+          const beta = 0.4 + Math.random() * 0.3;
+          const gamma = 0.3 + Math.random() * 0.3;
+          updateBrainBands(delta, theta, alpha, beta, gamma);
+        }
+      }, 1000);
+      
+      // Initial logs
+      addLog('Sistema O-sound iniciado', 'success');
+      addLog('Conecta tu dispositivo EEG para comenzar', 'info');
+    });
+    
+    // Handle file selection
+    function handleFileSelect(file) {
+      const fileInfo = document.getElementById('fileInfo');
+      const fileName = document.getElementById('fileName');
+      const fileSize = document.getElementById('fileSize');
+      const fileDuration = document.getElementById('fileDuration');
+      
+      fileName.textContent = file.name;
+      fileSize.textContent = formatFileSize(file.size);
+      
+      // Get audio duration
+      const audio = new Audio();
+      audio.src = URL.createObjectURL(file);
+      audio.addEventListener('loadedmetadata', () => {
+        fileDuration.textContent = formatDuration(audio.duration);
+      });
+      
+      fileInfo.classList.add('show');
+      
+      addLog(`Canción cargada: ${file.name}`, 'success');
+      
+      // Set up audio player
+      const audioPlayer = new Audio(URL.createObjectURL(file));
+      // Add player controls if needed
+    }
+    
+    // Utility functions
+    function formatFileSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+    
+    function formatDuration(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+  </script>
+</body>
+</html>

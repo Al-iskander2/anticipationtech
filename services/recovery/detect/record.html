@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Management - EEG Recorder</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div class="card">
+        <h2>Select Profile</h2>
+        <select id="profileSelect">
+            <option value="">-- Select Existing --</option>
+        </select>
+        <button id="btnSelectProfile" disabled>Continue with Selected</button>
+    </div>
+
+    <div class="card">
+        <h2>Create New Profile</h2>
+        <form id="profileForm">
+            <input type="text" id="name" placeholder="Name / ID" required>
+            <input type="number" id="age" placeholder="Age" required>
+            <select id="sex" required>
+                <option value="">Sex</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+                <option value="O">Other</option>
+            </select>
+            <input type="text" id="medication" placeholder="Medication (optional)">
+            <textarea id="notes" placeholder="Clinical Notes / Observations"></textarea>
+
+            <label style="display: block; margin-bottom: 15px;">
+                <input type="checkbox" id="consent" required style="width: auto;">
+                I confirm informed consent
+            </label>
+
+            <button type="submit" id="btnCreateProfile">Create and Continue</button>
+        </form>
+    </div>
+    <script src="perfil.js" type="module"></script>
+</body>
+
+</html>

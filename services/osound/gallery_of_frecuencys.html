@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experimento de Frecuencias Meditativas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #f0f0f0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #6dd5ed, #2193b0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: #a0d2eb;
+            max-width: 900px;
+            margin: 0 auto 15px;
+            line-height: 1.6;
+        }
+        
+        .session-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .session-btn {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+        }
+        
+        .session-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .session-info {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .session-active {
+            display: block;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .control-panel {
+            flex: 1;
+            min-width: 300px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        .frequencies-grid {
+            flex: 2;
+            min-width: 300px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        .panel-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #6dd5ed;
+            border-bottom: 2px solid #2193b0;
+            padding-bottom: 10px;
+        }
+        
+        .frequency-control {
+            margin-bottom: 25px;
+        }
+        
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .control-value {
+            color: #6dd5ed;
+            font-weight: bold;
+        }
+        
+        .slider-container {
+            position: relative;
+            height: 40px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .slider {
+            width: 100%;
+            height: 10px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: linear-gradient(to right, #0f2027, #2193b0, #6dd5ed);
+            border-radius: 5px;
+            outline: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            border: 3px solid #2193b0;
+        }
+        
+        .current-trial {
+            background-color: rgba(109, 213, 237, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 2px solid #6dd5ed;
+            display: none;
+        }
+        
+        .trial-active {
+            display: block;
+        }
+        
+        .trial-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .trial-timer {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #6dd5ed;
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .trial-wave {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+        
+        .wave-indicator {
+            padding: 8px 15px;
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .wave-active {
+            background-color: #6dd5ed;
+            color: #0f2027;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(109, 213, 237, 0.5);
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .play-btn {
+            background: linear-gradient(to right, #00b09b, #96c93d);
+            color: white;
+        }
+        
+        .stop-btn {
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+            color: white;
+        }
+        
+        .btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 25px;
+        }
+        
+        .frequency-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .frequency-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(109, 213, 237, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .frequency-card:hover:not(.disabled) {
+            background: rgba(109, 213, 237, 0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .frequency-card.active {
+            background: rgba(109, 213, 237, 0.15);
+            border-color: #6dd5ed;
+            box-shadow: 0 0 20px rgba(109, 213, 237, 0.3);
+        }
+        
+        .frequency-card.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .frequency-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #6dd5ed;
+            margin-bottom: 5px;
+        }
+        
+        .frequency-name {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #f0f0f0;
+        }
+        
+        .frequency-desc {
+            font-size: 0.9rem;
+            color: #a0d2eb;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            min-height: 70px;
+        }
+        
+        .frequency-type {
+            display: inline-block;
+            padding: 5px 12px;
+            background-color: rgba(33, 147, 176, 0.3);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #6dd5ed;
+            margin-bottom: 15px;
+        }
+        
+        .card-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .card-play {
+            min-width: 120px;
+            padding: 10px 15px;
+            font-size: 0.95rem;
+        }
+        
+        .card-status {
+            font-size: 0.9rem;
+            color: #a0d2eb;
+            text-align: right;
+            flex-grow: 1;
+            padding-left: 10px;
+        }
+        
+        .status-active {
+            color: #96c93d;
+            font-weight: bold;
+        }
+        
+        .status-completed {
+            color: #6dd5ed;
+        }
+        
+        .visualizer {
+            width: 100%;
+            height: 150px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin-top: 25px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .wave {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(109, 213, 237, 0.1), transparent);
+        }
+        
+        .wave-line {
+            fill: none;
+            stroke: #6dd5ed;
+            stroke-width: 2;
+            opacity: 0.7;
+        }
+        
+        .instructions {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .instructions h3 {
+            color: #6dd5ed;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+            line-height: 1.6;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #a0d2eb;
+            font-size: 0.9rem;
+        }
+        
+        .markers-log {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.85rem;
+        }
+        
+        .marker-entry {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Modal para mostrar ubicación de archivos */
+        .files-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .files-modal.active {
+            display: flex;
+        }
+
+        .files-content {
+            background: linear-gradient(135deg, #0f2027, #203a43);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            border: 2px solid #6dd5ed;
+        }
+
+        .files-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2193b0;
+        }
+
+        .files-header h3 {
+            color: #6dd5ed;
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: #a0d2eb;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: #ff416c;
+        }
+
+        .file-location {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .file-icon {
+            color: #6dd5ed;
+            margin-right: 10px;
+        }
+
+        .file-path {
+            color: #f0f0f0;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        .files-footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #a0d2eb;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .frequency-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .session-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .session-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .card-controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .card-status {
+                text-align: center;
+                padding-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-brain"></i> Experimento EEG - Frecuencias Meditativas</h1>
+            <p class="subtitle">Protocolo experimental: Cada frecuencia se reproduce durante 1 minuto, pasando automáticamente por 4 tipos de onda (15s cada uno). Los datos se registrarán con contexto integrado para correlacionar con tu EEG.</p>
+            
+            <div class="session-controls">
+                <button id="session-start" class="session-btn">
+                    <i class="fas fa-record-vinyl"></i> Iniciar Sesión Experimental
+                </button>
+                <button id="session-end" class="session-btn" style="background: linear-gradient(to right, #ff416c, #ff4b2b);" disabled>
+                    <i class="fas fa-stop-circle"></i> Finalizar Sesión
+                </button>
+                <button id="show-files-btn" class="session-btn" style="background: linear-gradient(to right, #4CAF50, #2E7D32);" disabled>
+                    <i class="fas fa-folder-open"></i> Ver Archivos Guardados
+                </button>
+            </div>
+            
+            <div class="session-info" id="session-info">
+                <p><strong>Sesión ID:</strong> <span id="session-id">No iniciada</span></p>
+                <p><strong>Estado:</strong> <span id="session-status">Inactiva</span></p>
+                <p><strong>Trials completados:</strong> <span id="trials-completed">0</span> / <span id="total-trials">0</span></p>
+                <p><strong>Eventos registrados:</strong> <span id="events-count">0</span></p>
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <div class="control-panel">
+                <h2 class="panel-title">Panel de Control</h2>
+                
+                <div class="frequency-control">
+                    <div class="control-label">
+                        <span>Volumen</span>
+                        <span id="current-volume" class="control-value">50%</span>
+                    </div>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="100" value="50" class="slider" id="volume-slider">
+                    </div>
+                    <div class="control-label">
+                        <span>Bajo</span>
+                        <span>Alto</span>
+                    </div>
+                </div>
+                
+                <div class="current-trial" id="current-trial">
+                    <div class="trial-info">
+                        <div>
+                            <h3 style="color: #6dd5ed; margin-bottom: 5px;">Trial en Progreso</h3>
+                            <p id="trial-frequency">432 Hz - Afinación Universal</p>
+                        </div>
+                        <button id="stop-trial" class="btn stop-btn">
+                            <i class="fas fa-stop"></i> Detener Trial
+                        </button>
+                    </div>
+                    
+                    <div class="trial-timer" id="trial-timer">60</div>
+                    
+                    <div class="trial-wave">
+                        <div class="wave-indicator" id="wave-sine">Sinusoidal<br>0-15s</div>
+                        <div class="wave-indicator" id="wave-triangle">Triangular<br>15-30s</div>
+                        <div class="wave-indicator" id="wave-sawtooth">Sierra<br>30-45s</div>
+                        <div class="wave-indicator" id="wave-square">Cuadrada<br>45-60s</div>
+                    </div>
+                </div>
+                
+                <div class="visualizer">
+                    <svg class="wave" id="wave-visualizer" width="100%" height="100%"></svg>
+                </div>
+                
+                <div class="markers-log">
+                    <h4 style="color: #6dd5ed; margin-bottom: 10px;">Registro de Eventos</h4>
+                    <div id="events-list">
+                        <!-- Los eventos se mostrarán aquí -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="frequencies-grid">
+                <h2 class="panel-title">Protocolo Experimental</h2>
+                <p style="margin-bottom: 20px; color: #a0d2eb;">Haz clic en "Reproducir 1 min" para iniciar un trial con esa frecuencia. Cada trial pasa automáticamente por 4 tipos de onda.</p>
+                
+                <div class="frequency-cards" id="frequency-cards">
+                    <!-- Las tarjetas de frecuencia se generarán con JavaScript -->
+                </div>
+                
+                <div class="instructions">
+                    <h3><i class="fas fa-info-circle"></i> Instrucciones del Experimento</h3>
+                    <ul>
+                        <li>Inicia una sesión experimental antes de comenzar</li>
+                        <li>Selecciona una frecuencia haciendo clic en "Reproducir 1 min"</li>
+                        <li>Cada trial dura 60 segundos (15s por tipo de onda)</li>
+                        <li>Mantén los auriculares puestos durante todo el trial</li>
+                        <li>Trata de mantenerte relajado y quieto durante la reproducción</li>
+                        <li>Puedes ajustar el volumen antes de iniciar un trial</li>
+                        <li>Los archivos se guardan automáticamente al finalizar la sesión</li>
+                        <li>Los datos EEG se guardan en data/csv/ y el reporte en data/pdf/</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Experimento EEG - Generador de Frecuencias Meditativas | Protocolo para validación de efectos de frecuencias en ondas cerebrales</p>
+            <p style="margin-top: 10px;">Usa auriculares de calidad y mantén un entorno tranquilo durante los trials.</p>
+        </footer>
+    </div>
+
+    <!-- Modal para mostrar archivos guardados -->
+    <div class="files-modal" id="files-modal">
+        <div class="files-content">
+            <div class="files-header">
+                <h3><i class="fas fa-folder-open"></i> Archivos Guardados</h3>
+                <button class="close-modal" id="close-modal">&times;</button>
+            </div>
+            
+            <div class="file-location">
+                <p><i class="fas fa-file-csv file-icon"></i> <strong>Datos EEG (CSV):</strong></p>
+                <p class="file-path" id="csv-path">Esperando datos de sesión...</p>
+                
+                <p><i class="fas fa-file-pdf file-icon"></i> <strong>Reporte (PDF):</strong></p>
+                <p class="file-path" id="pdf-path">Se generará automáticamente al finalizar</p>
+            </div>
+            
+            <div class="files-footer">
+                <p>Los archivos se guardan automáticamente en las carpetas correspondientes del proyecto.</p>
+                <p><small>Ruta del proyecto: <span id="project-path">...</span></small></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================= CONFIGURACIÓN =================
+        let audioContext;
+        let oscillator;
+        let gainNode;
+        let isPlaying = false;
+        let currentFrequency = 432;
+        
+        // Estado del experimento
+        let experimentSession = {
+            id: null,
+            active: false,
+            startTime: null,
+            trials: [],
+            events: [],
+            currentTrial: null
+        };
+        
+        // Frecuencias meditativas predefinidas
+        const meditationFrequencies = [
+            {
+                value: 7.83,
+                name: "Resonancia Schumann",
+                description: "Frecuencia natural de la Tierra. Equilibra el ritmo biológico, reduce el estrés y mejora el sueño.",
+                type: "Geo-Resonancia"
+            },
+            {
+                value: 40,
+                name: "Ondas Gamma",
+                description: "Asociada con alta concentración, percepción expandida y estados de conciencia elevados.",
+                type: "Onda Cerebral"
+            },
+            {
+                value: 15,
+                name: "Ondas Beta Baja",
+                description: "Estado de alerta relajada, ideal para concentración y actividades cognitivas.",
+                type: "Onda Cerebral"
+            },
+            {
+                value: 10,
+                name: "Ondas Alfa",
+                description: "Relajación despierta, calma mental, estado meditativo ligero y creatividad.",
+                type: "Onda Cerebral"
+            },
+            {
+                value: 6,
+                name: "Ondas Theta",
+                description: "Meditación profunda, trance ligero, acceso al subconsciente y sueño REM.",
+                type: "Onda Cerebral"
+            },
+            {
+                value: 2,
+                name: "Ondas Delta",
+                description: "Sueño profundo, regeneración celular, inconsciencia física y curación.",
+                type: "Onda Cerebral"
+            },
+            {
+                value: 432,
+                name: "Afinación Universal",
+                description: "Frecuencia armónica con la naturaleza. Promueve paz, calma y bienestar general.",
+                type: "Solfeggio"
+            },
+            {
+                value: 528,
+                name: "Frecuencia del Amor",
+                description: "Conocida como 'tono milagroso'. Promueve sanación, transformación y paz interior.",
+                type: "Solfeggio"
+            },
+            {
+                value: 741,
+                name: "Frecuencia de la Creatividad",
+                description: "Estimula la expresión personal, resolución de problemas y claridad mental.",
+                type: "Solfeggio"
+            },
+            {
+                value: 963,
+                name: "Frecuencia Divina",
+                description: "Conecta con la conciencia superior, activa la glándula pineal y expande la percepción.",
+                type: "Solfeggio"
+            },
+            {
+                value: 174,
+                name: "Alivio del Dolor",
+                description: "Reduce la tensión física y el dolor. Proporciona una sensación de seguridad y estabilidad.",
+                type: "Solfeggio"
+            },
+            {
+                value: 285,
+                name: "Regeneración Celular",
+                description: "Ayuda en la sanación de tejidos y órganos. Restaura y rejuvenece el cuerpo energético.",
+                type: "Solfeggio"
+            }
+        ];
+        
+        // Tipos de onda y temporización
+        const WAVE_TYPES = [
+            { id: 'sine', name: 'Sinusoidal', duration: 15000 },
+            { id: 'triangle', name: 'Triangular', duration: 15000 },
+            { id: 'sawtooth', name: 'Sierra', duration: 15000 },
+            { id: 'square', name: 'Cuadrada', duration: 15000 }
+        ];
+        
+        const TRIAL_DURATION = 60000; // 60 segundos
+        let trialTimer = null;
+        let trialTimeLeft = 0;
+        let currentWaveIndex = 0;
+        let waveTimers = [];
+        
+        // ================= INICIALIZACIÓN =================
+        document.addEventListener('DOMContentLoaded', function() {
+            initFrequencyCards();
+            initControls();
+            initVisualizer();
+            initModal();
+            updateSessionUI();
+        });
+        
+        // ================= TARJETAS DE FRECUENCIA =================
+        function initFrequencyCards() {
+            const container = document.getElementById('frequency-cards');
+            
+            meditationFrequencies.forEach((freq, index) => {
+                const card = document.createElement('div');
+                card.className = 'frequency-card';
+                card.dataset.freq = freq.value;
+                card.dataset.index = index;
+                
+                card.innerHTML = `
+                    <div class="frequency-value">${freq.value} Hz</div>
+                    <div class="frequency-name">${freq.name}</div>
+                    <div class="frequency-desc">${freq.description}</div>
+                    <div class="frequency-type">${freq.type}</div>
+                    
+                    <div class="card-controls">
+                        <button class="btn play-btn card-play" data-freq="${freq.value}">
+                            <i class="fas fa-play"></i> Reproducir 1 min
+                        </button>
+                        <div class="card-status" id="status-${index}">
+                            <!-- Estado se actualizará dinámicamente -->
+                        </div>
+                    </div>
+                `;
+                
+                // Configurar el botón de la tarjeta
+                const playBtn = card.querySelector('.card-play');
+                playBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (!experimentSession.active) {
+                        alert('Por favor, inicia una sesión experimental primero.');
+                        return;
+                    }
+                    
+                    if (experimentSession.currentTrial && experimentSession.currentTrial.active) {
+                        if (confirm('Hay un trial en progreso. ¿Deseas interrumpirlo y comenzar uno nuevo?')) {
+                            stopCurrentTrial('interrupted');
+                            startTrial(freq.value, card);
+                        }
+                    } else {
+                        startTrial(freq.value, card);
+                    }
+                });
+                
+                container.appendChild(card);
+            });
+        }
+        
+        // ================= CONTROLES =================
+        function initControls() {
+            // Control de volumen
+            const volumeSlider = document.getElementById('volume-slider');
+            volumeSlider.addEventListener('input', function() {
+                const volume = parseFloat(this.value) / 100;
+                document.getElementById('current-volume').textContent = `${this.value}%`;
+                
+                if (gainNode) {
+                    gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+                }
+            });
+            
+            // Botón para detener trial actual
+            document.getElementById('stop-trial').addEventListener('click', () => {
+                if (experimentSession.currentTrial && experimentSession.currentTrial.active) {
+                    stopCurrentTrial('stopped');
+                }
+            });
+            
+            // Control de sesión
+            document.getElementById('session-start').addEventListener('click', startSession);
+            document.getElementById('session-end').addEventListener('click', endSession);
+            document.getElementById('show-files-btn').addEventListener('click', showFilesLocation);
+            
+            // Inicializar valor de volumen
+            document.getElementById('current-volume').textContent = `${volumeSlider.value}%`;
+        }
+        
+        // ================= MODAL =================
+        function initModal() {
+            const modal = document.getElementById('files-modal');
+            const closeBtn = document.getElementById('close-modal');
+            const showFilesBtn = document.getElementById('show-files-btn');
+            
+            closeBtn.addEventListener('click', () => {
+                modal.classList.remove('active');
+            });
+            
+            // Cerrar modal al hacer clic fuera
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+            
+            // Mostrar ruta del proyecto
+            document.getElementById('project-path').textContent = window.location.host + '/';
+        }
+        
+        function updateFilesModal() {
+            if (experimentSession.id) {
+                document.getElementById('csv-path').textContent = `data/csv/${experimentSession.id}.csv`;
+                document.getElementById('pdf-path').textContent = `data/pdf/report_${experimentSession.id}.pdf`;
+            }
+        }
+        
+        function showFilesLocation() {
+            if (!experimentSession.id) {
+                alert('No hay datos disponibles. Primero finaliza una sesión experimental.');
+                return;
+            }
+            
+            updateFilesModal();
+            document.getElementById('files-modal').classList.add('active');
+        }
+        
+        // ================= SESIÓN EXPERIMENTAL =================
+        async function startSession() {
+            // Verificar que el backend esté disponible
+            try {
+                const response = await fetch('/api/status');
+                if (!response.ok) {
+                    throw new Error('Backend no disponible');
+                }
+            } catch (error) {
+                alert('Error conectando al servidor backend. Asegúrate de que el servidor esté corriendo en http://localhost:8000');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/session/start', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        subject_id: 'experiment_subject',
+                        notes: 'Sesión de frecuencias meditativas'
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    experimentSession.id = result.session_id;
+                    experimentSession.active = true;
+                    experimentSession.startTime = Date.now();
+                    experimentSession.trials = [];
+                    experimentSession.events = [];
+                    experimentSession.currentTrial = null;
+                    
+                    // Actualizar UI
+                    updateSessionUI();
+                    
+                    // Habilitar/deshabilitar botones
+                    document.getElementById('session-start').disabled = true;
+                    document.getElementById('session-end').disabled = false;
+                    document.getElementById('show-files-btn').disabled = true;
+                    
+                    // Añadir evento de inicio de sesión
+                    addEvent('session_start', {
+                        session_id: experimentSession.id,
+                        timestamp: new Date().toISOString()
+                    });
+                    
+                    alert(`✅ Sesión experimental iniciada:\n\nID: ${experimentSession.id}\n\nLos datos se guardarán automáticamente.`);
+                } else {
+                    alert('Error iniciando sesión en el backend: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error conectando al servidor backend: ' + error.message);
+            }
+        }
+        
+        async function endSession() {
+            if (!experimentSession.active) return;
+            
+            if (!confirm('¿Estás seguro de que quieres finalizar la sesión? Los datos se guardarán automáticamente.')) {
+                return;
+            }
+            
+            // Detener cualquier trial en progreso
+            if (experimentSession.currentTrial && experimentSession.currentTrial.active) {
+                stopCurrentTrial('session_ended');
+            }
+            
+            // Añadir evento de fin de sesión
+            addEvent('session_end', {
+                session_id: experimentSession.id,
+                duration_ms: Date.now() - experimentSession.startTime,
+                trials_completed: experimentSession.trials.filter(t => t.completed).length,
+                timestamp: new Date().toISOString()
+            });
+            
+            try {
+                const response = await fetch('/api/session/end', {
+                    method: 'POST'
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    // Habilitar botón para ver archivos
+                    document.getElementById('show-files-btn').disabled = false;
+                    
+                    // Mostrar mensaje con ubicación de archivos
+                    const trialsCompleted = experimentSession.trials.filter(t => t.completed).length;
+                    const totalTrials = meditationFrequencies.length;
+                    
+                    const message = `✅ SESIÓN FINALIZADA\n\n` +
+                                   `📊 Trials completados: ${trialsCompleted} / ${totalTrials}\n\n` +
+                                   `📁 ARCHIVOS GUARDADOS:\n\n` +
+                                   `📄 Datos EEG: data/csv/${experimentSession.id}.csv\n` +
+                                   `📊 Reporte PDF: data/pdf/report_${experimentSession.id}.pdf\n\n` +
+                                   `Puedes ver la ubicación exacta haciendo clic en "Ver Archivos Guardados".`;
+                    
+                    alert(message);
+                    
+                    // Actualizar modal con las rutas
+                    updateFilesModal();
+                } else {
+                    console.error('Error finalizando sesión backend:', result.error);
+                    alert('Error finalizando sesión: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Error conectando al backend:', error);
+                alert('Error conectando al servidor: ' + error.message);
+            }
+            
+            experimentSession.active = false;
+            
+            // Actualizar UI
+            updateSessionUI();
+            
+            // Habilitar/deshabilitar botones
+            document.getElementById('session-start').disabled = false;
+            document.getElementById('session-end').disabled = true;
+        }
+        
+        function updateSessionUI() {
+            const sessionInfo = document.getElementById('session-info');
+            const trialsCompleted = experimentSession.trials.filter(t => t.completed).length;
+            
+            if (experimentSession.active) {
+                sessionInfo.classList.add('session-active');
+                document.getElementById('session-id').textContent = experimentSession.id;
+                document.getElementById('session-status').textContent = 'Activa';
+                document.getElementById('session-status').style.color = '#96c93d';
+            } else {
+                sessionInfo.classList.remove('session-active');
+                document.getElementById('session-status').textContent = 'Inactiva';
+                document.getElementById('session-status').style.color = '#ff416c';
+            }
+            
+            document.getElementById('trials-completed').textContent = trialsCompleted;
+            document.getElementById('total-trials').textContent = meditationFrequencies.length;
+            document.getElementById('events-count').textContent = experimentSession.events.length;
+        }
+        
+        // ================= TRIAL (PRUEBA) =================
+        async function startTrial(frequency, card) {
+            if (!experimentSession.active) {
+                alert('Por favor, inicia una sesión experimental primero.');
+                return;
+            }
+            
+            // Configurar audio si es necesario
+            await setupAudioContext();
+            
+            // Encontrar información de la frecuencia
+            const freqInfo = meditationFrequencies.find(f => f.value === frequency);
+            
+            // Crear objeto de trial
+            const trial = {
+                id: 'TRIAL-' + Date.now(),
+                frequency: frequency,
+                frequencyName: freqInfo.name,
+                startTime: Date.now(),
+                active: true,
+                completed: false,
+                waves: []
+            };
+            
+            experimentSession.currentTrial = trial;
+            experimentSession.trials.push(trial);
+            
+            // Actualizar UI del trial
+            document.getElementById('current-trial').classList.add('trial-active');
+            document.getElementById('trial-frequency').textContent = `${frequency} Hz - ${freqInfo.name}`;
+            
+            // Deshabilitar otras tarjetas
+            disableOtherCards(card);
+            
+            // Actualizar estado en la tarjeta
+            updateCardStatus(card, 'active', 'Trial activo');
+            
+            // Enviar contexto al backend
+            await sendContextToBackend('PLAYING', 'sine', frequency, trial.id);
+            
+            // Añadir evento de inicio de trial
+            addEvent('trial_start', {
+                trial_id: trial.id,
+                frequency: frequency,
+                frequency_name: freqInfo.name,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Configurar audio
+            setupOscillator(frequency);
+            
+            // Iniciar temporizador del trial
+            startTrialTimer(trial, card);
+            
+            // Iniciar rotación de ondas
+            startWaveRotation(trial);
+            
+            // Actualizar visualizador
+            updateVisualizer();
+            
+            updateSessionUI();
+        }
+        
+        async function setupAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            
+            if (audioContext.state === 'suspended') {
+                await audioContext.resume();
+            }
+            
+            if (!gainNode) {
+                gainNode = audioContext.createGain();
+                gainNode.connect(audioContext.destination);
+                
+                // Configurar volumen inicial
+                const volume = parseFloat(document.getElementById('volume-slider').value) / 100;
+                gainNode.gain.value = volume;
+            }
+        }
+        
+        function setupOscillator(frequency) {
+            // Detener oscilador anterior si existe
+            if (oscillator) {
+                try {
+                    oscillator.stop();
+                } catch(e) {}
+            }
+            
+            // Crear nuevo oscilador
+            oscillator = audioContext.createOscillator();
+            oscillator.type = 'sine'; // Comenzar con onda sinusoidal
+            oscillator.frequency.value = frequency;
+            oscillator.connect(gainNode);
+            
+            // Aplicar fade in
+            const now = audioContext.currentTime;
+            gainNode.gain.cancelScheduledValues(now);
+            gainNode.gain.setValueAtTime(0, now);
+            gainNode.gain.linearRampToValueAtTime(gainNode.gain.value, now + 0.1);
+            
+            oscillator.start();
+            isPlaying = true;
+            
+            // Resaltar onda actual en UI
+            highlightCurrentWave(0);
+        }
+        
+        function startTrialTimer(trial, card) {
+            trialTimeLeft = TRIAL_DURATION / 1000; // Convertir a segundos
+            updateTimerDisplay();
+            
+            trialTimer = setInterval(() => {
+                trialTimeLeft--;
+                updateTimerDisplay();
+                
+                if (trialTimeLeft <= 0) {
+                    clearInterval(trialTimer);
+                    completeTrial(trial, card);
+                }
+            }, 1000);
+        }
+        
+        function updateTimerDisplay() {
+            const timerDisplay = document.getElementById('trial-timer');
+            timerDisplay.textContent = trialTimeLeft;
+            
+            // Cambiar color cuando falte poco tiempo
+            if (trialTimeLeft <= 10) {
+                timerDisplay.style.color = '#ff416c';
+            } else if (trialTimeLeft <= 30) {
+                timerDisplay.style.color = '#ffa726';
+            } else {
+                timerDisplay.style.color = '#6dd5ed';
+            }
+        }
+        
+        async function startWaveRotation(trial) {
+            currentWaveIndex = 0;
+            waveTimers = [];
+            
+            // Programar cambios de onda cada 15 segundos
+            for (let i = 1; i <= 4; i++) {
+                const timer = setTimeout(async () => {
+                    if (i < 4) {
+                        await changeWaveType(i, trial);
+                    }
+                }, i * 15000);
+                
+                waveTimers.push(timer);
+            }
+        }
+        
+        async function changeWaveType(waveIndex, trial) {
+            if (!oscillator || !experimentSession.currentTrial.active) return;
+            
+            currentWaveIndex = waveIndex;
+            const waveType = WAVE_TYPES[waveIndex].id;
+            oscillator.type = waveType;
+            
+            // Enviar contexto al backend
+            await sendContextToBackend('PLAYING', waveType, trial.frequency, trial.id);
+            
+            // Registrar cambio de onda en el trial
+            trial.waves.push({
+                index: waveIndex,
+                type: waveType,
+                name: WAVE_TYPES[waveIndex].name,
+                startTime: Date.now() - trial.startTime
+            });
+            
+            // Añadir evento de cambio de onda
+            addEvent('wave_change', {
+                trial_id: trial.id,
+                wave_index: waveIndex,
+                wave_type: waveType,
+                wave_name: WAVE_TYPES[waveIndex].name,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Resaltar onda actual en UI
+            highlightCurrentWave(waveIndex);
+            
+            // Actualizar visualizador
+            updateVisualizer();
+        }
+        
+        function highlightCurrentWave(waveIndex) {
+            // Remover resaltado de todas las ondas
+            WAVE_TYPES.forEach((wave, index) => {
+                const element = document.getElementById(`wave-${wave.id}`);
+                if (element) {
+                    element.classList.remove('wave-active');
+                }
+            });
+            
+            // Resaltar onda actual
+            const currentWave = WAVE_TYPES[waveIndex];
+            if (currentWave) {
+                const element = document.getElementById(`wave-${currentWave.id}`);
+                if (element) {
+                    element.classList.add('wave-active');
+                }
+            }
+        }
+        
+        async function stopCurrentTrial(reason) {
+            if (!experimentSession.currentTrial || !experimentSession.currentTrial.active) return;
+            
+            const trial = experimentSession.currentTrial;
+            const card = document.querySelector(`.frequency-card[data-freq="${trial.frequency}"]`);
+            
+            // Limpiar timers
+            if (trialTimer) {
+                clearInterval(trialTimer);
+                trialTimer = null;
+            }
+            
+            waveTimers.forEach(timer => clearTimeout(timer));
+            waveTimers = [];
+            
+            // Detener audio con fade out
+            if (oscillator && isPlaying) {
+                const now = audioContext.currentTime;
+                gainNode.gain.cancelScheduledValues(now);
+                gainNode.gain.setValueAtTime(gainNode.gain.value, now);
+                gainNode.gain.linearRampToValueAtTime(0, now + 0.1);
+                
+                setTimeout(() => {
+                    try {
+                        oscillator.stop();
+                    } catch(e) {}
+                    oscillator = null;
+                    isPlaying = false;
+                }, 100);
+            }
+            
+            // Enviar contexto de vuelta a IDLE
+            await sendContextToBackend('IDLE', '', '', '');
+            
+            // Actualizar estado del trial
+            trial.active = false;
+            trial.endTime = Date.now();
+            trial.duration = trial.endTime - trial.startTime;
+            trial.completed = (reason === 'completed');
+            
+            // Añadir evento de fin de trial
+            addEvent('trial_end', {
+                trial_id: trial.id,
+                reason: reason,
+                duration_ms: trial.duration,
+                completed: trial.completed,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Actualizar UI
+            document.getElementById('current-trial').classList.remove('trial-active');
+            
+            if (card) {
+                const status = reason === 'completed' ? 'completed' : 'interrupted';
+                const statusText = reason === 'completed' ? 'Completado' : 'Interrumpido';
+                updateCardStatus(card, status, statusText);
+            }
+            
+            // Habilitar otras tarjetas
+            enableAllCards();
+            
+            experimentSession.currentTrial = null;
+            updateSessionUI();
+        }
+        
+        function completeTrial(trial, card) {
+            stopCurrentTrial('completed');
+            
+            // Verificar si se completaron todos los trials
+            const completedTrials = experimentSession.trials.filter(t => t.completed).length;
+            if (completedTrials === meditationFrequencies.length) {
+                setTimeout(() => {
+                    alert('¡Felicidades! Has completado todos los trials de esta sesión.');
+                }, 500);
+            }
+        }
+        
+        // ================= EVENTOS =================
+        async function addEvent(eventType, data) {
+            const event = {
+                id: 'EVT-' + Date.now(),
+                event: eventType,
+                timestamp: new Date().toISOString(),
+                timestamp_ms: Date.now(),
+                session_id: experimentSession.id,
+                trial_id: experimentSession.currentTrial ? experimentSession.currentTrial.id : null,
+                data: data
+            };
+            
+            experimentSession.events.push(event);
+            
+            // Actualizar UI de eventos
+            updateEventsLog(event);
+            updateSessionUI();
+        }
+        
+        function updateEventsLog(event) {
+            const eventsList = document.getElementById('events-list');
+            const eventEntry = document.createElement('div');
+            eventEntry.className = 'marker-entry';
+            
+            const time = new Date(event.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+            const eventName = event.event.replace('_', ' ').toUpperCase();
+            
+            eventEntry.innerHTML = `
+                <span style="color: #6dd5ed;">${time}</span> | 
+                <span style="color: ${getEventColor(event.event)}">${eventName}</span> | 
+                <span style="color: #a0d2eb;">${event.data.frequency || ''} ${event.data.frequency ? 'Hz' : ''}</span>
+            `;
+            
+            eventsList.appendChild(eventEntry);
+            
+            // Auto-scroll al final
+            eventsList.scrollTop = eventsList.scrollHeight;
+        }
+        
+        function getEventColor(eventType) {
+            switch(eventType) {
+                case 'session_start': return '#00b09b';
+                case 'session_end': return '#ff416c';
+                case 'trial_start': return '#96c93d';
+                case 'trial_end': return '#ffa726';
+                case 'wave_change': return '#6dd5ed';
+                default: return '#a0d2eb';
+            }
+        }
+        
+        async function sendContextToBackend(state, wave, frequency, trial_id) {
+            try {
+                const response = await fetch('/api/context', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        state: state,
+                        wave: wave,
+                        frequency: frequency,
+                        trial_id: trial_id
+                    })
+                });
+                
+                const result = await response.json();
+                if (!result.success) {
+                    console.error('Error enviando contexto:', result.error);
+                }
+            } catch (error) {
+                console.error('Error conectando al backend:', error);
+            }
+        }
+        
+        // ================= MANEJO DE TARJETAS =================
+        function disableOtherCards(activeCard) {
+            const cards = document.querySelectorAll('.frequency-card');
+            cards.forEach(card => {
+                if (card !== activeCard) {
+                    card.classList.add('disabled');
+                    const playBtn = card.querySelector('.card-play');
+                    if (playBtn) playBtn.disabled = true;
+                }
+            });
+        }
+        
+        function enableAllCards() {
+            const cards = document.querySelectorAll('.frequency-card');
+            cards.forEach(card => {
+                card.classList.remove('disabled');
+                const playBtn = card.querySelector('.card-play');
+                if (playBtn) playBtn.disabled = false;
+            });
+        }
+        
+        function updateCardStatus(card, status, text) {
+            const cardIndex = card.dataset.index;
+            const statusElement = document.getElementById(`status-${cardIndex}`);
+            
+            if (statusElement) {
+                statusElement.textContent = text;
+                statusElement.className = 'card-status';
+                
+                if (status === 'active') {
+                    statusElement.classList.add('status-active');
+                } else if (status === 'completed') {
+                    statusElement.classList.add('status-completed');
+                }
+            }
+        }
+        
+        // ================= VISUALIZADOR =================
+        function initVisualizer() {
+            updateVisualizer();
+        }
+        
+        function updateVisualizer() {
+            const svg = document.getElementById('wave-visualizer');
+            svg.innerHTML = '';
+            
+            const width = svg.clientWidth;
+            const height = svg.clientHeight;
+            
+            // Crear una onda basada en la frecuencia y tipo de onda actual
+            const points = [];
+            const amplitude = height / 3;
+            const frequency = (currentFrequency || 432) / 100; // Escalar para visualización
+            const cycles = 4;
+            
+            // Determinar la forma de onda para visualización
+            let waveFunc = Math.sin;
+            if (oscillator && oscillator.type === 'triangle') {
+                waveFunc = (x) => {
+                    return 2 * Math.abs(2 * (x - Math.floor(x + 0.5))) - 1;
+                };
+            } else if (oscillator && oscillator.type === 'sawtooth') {
+                waveFunc = (x) => {
+                    return 2 * (x - Math.floor(x + 0.5));
+                };
+            } else if (oscillator && oscillator.type === 'square') {
+                waveFunc = (x) => {
+                    return Math.sin(x) > 0 ? 1 : -1;
+                };
+            }
+            
+            for (let i = 0; i <= width; i += 2) {
+                const x = i;
+                // La ecuación de la onda
+                const y = height / 2 + amplitude * waveFunc((i / width) * cycles * 2 * Math.PI * frequency);
+                points.push(`${x},${y}`);
+            }
+            
+            // Crear el elemento de línea de la onda
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+            path.setAttribute("points", points.join(" "));
+            path.setAttribute("class", "wave-line");
+            
+            svg.appendChild(path);
+        }
+        
+        // ================= EVENTOS GLOBALES =================
+        window.addEventListener('resize', updateVisualizer);
+        
+        // Prevenir que la página se cierre con datos sin guardar
+        window.addEventListener('beforeunload', (e) => {
+            if (experimentSession.active) {
+                e.preventDefault();
+                e.returnValue = 'Tienes una sesión experimental activa. ¿Estás seguro de que quieres salir?';
+            }
+        });
+    </script>
+</body>
+</html>
